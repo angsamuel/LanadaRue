@@ -7,8 +7,8 @@ public class LevelControllerScript : MonoBehaviour {
 	//number of tiles this level supports
 	GameObject tile;
 
-	int mapRows = 25;
-	int mapCols = 60;
+	int mapRows = 30;
+	int mapCols = 30;
 
 	//grid stores a list at each location, which stores all matrixOccupants
 	private List<GameObject> [,] levelGrid; 
@@ -16,7 +16,7 @@ public class LevelControllerScript : MonoBehaviour {
 	void Start () {
 		//create levelGrid
 		levelGrid = new List<GameObject> [mapRows,mapCols];
-		tile = Resources.Load ("Prefabs/Environment/DefaultTile") as GameObject;
+		tile = Resources.Load ("Prefabs/Environment/Tile") as GameObject;
 		spawnTiles();
 	}
 
