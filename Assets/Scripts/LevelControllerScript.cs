@@ -7,8 +7,8 @@ public class LevelControllerScript : MonoBehaviour {
 	//number of tiles this level supports
 	GameObject tile;
 
-	int mapRows = 30;
-	int mapCols = 30;
+	public int mapRows = 100;
+	public int mapCols = 100;
 
 	//grid stores a list at each location, which stores all matrixOccupants
 	private List<GameObject> [,] levelGrid; 
