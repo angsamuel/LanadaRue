@@ -2,8 +2,16 @@
 using System.Collections;
 
 public class CameraScript : MonoBehaviour {
-	private int levelWidth;
-	private int levelHeight;
+	GameObject levelController;
+	LevelControllerScript levelControllerScript;
+
+	private int mapRows;
+	private int mapCols;
+
+	private float camHeight;
+	private float camWidth;
+	private float maxCamHeight;
+	private float maxCamWidth;
 
 	public Camera cam;
 	public float originalCameraSpeedCutBy = 10f;
@@ -12,32 +20,52 @@ public class CameraScript : MonoBehaviour {
 	public float ppuScale = .05f;
 	public int ppu = 32;
 
-	private float cameraCurrentZoom;
+	public float cameraCurrentZoom;
 	private float cameraZoomMax;
 	public float cameraZoomMin = 10;
 
 	public float czm;
-	public float mouseSensitivity =0f;
+	public float mouseSensitivity = 0f;
 	private Vector3 lastPosition;
+
 
 	void Start ()
 	{
-		//Orthographic size = ((Vert Resolution)/(PPUScale * PPU)) * 0.5
-		//levelWidth = GameObject.Find("LevelController");
-		//calculate maximum camera zoom
-		cameraCurrentZoom = ((Screen.width)/(1 * 32))*0.5f;
+		levelController = GameObject.Find ("LevelController");
+		levelControllerScript = levelController.GetComponent<LevelControllerScript> ();
+
+		mapRows = levelControllerScript.GetMapRows();
+		mapCols = levelControllerScript.GetMapCols();
+
+		//calculate maximum camera zoom //Orthographic size = ((Vert Resolution)/(PPUScale * PPU)) * 0.5
+		cameraCurrentZoom = ((Screen.height)/(1 * 32))*0.5000f;
 		cameraZoomMax = cameraCurrentZoom;
 		Camera.main.orthographicSize = cameraCurrentZoom;
 		cameraSpeedCutBy = originalCameraSpeedCutBy * (cameraCurrentZoom / cameraZoomMax);
 		czm = cameraCurrentZoom;
 		Debug.Log ("width " + Screen.width);
 		Debug.Log ("height " + Screen.height);
+
+		camHeight = 2f * cam.orthographicSize;
+		camWidth = camHeight * cam.aspect;
+		maxCamWidth = camWidth;
+		maxCamHeight = camHeight;
 	}
-	void Update () {
+
+    void LateUpdate()
+    {
+        Vector3 v3 = transform.position;
+        v3.x = Mathf.Clamp(v3.x, -(mapCols / 2) + camWidth / 2, (mapCols / 2) - camWidth / 2);
+        v3.y = Mathf.Clamp(v3.y, -(mapRows / 2) + camHeight / 2, (mapRows / 2) - camHeight / 2);
+        transform.position = v3;
+    }
+
+
+    void Update () {
 		czm = cameraCurrentZoom;
-		if (transform.position.y < -49.5f + cam.orthographicSize) {
-			transform.position = new Vector3 (transform.position.x, -49.5f + cam.orthographicSize, transform.position.z);;
-		}
+
+		camHeight = 2f * cam.orthographicSize;
+		camWidth = camHeight * cam.aspect;
 		if (Input.GetAxis("Mouse ScrollWheel") < 0) // back
 		{
 			if (cameraCurrentZoom < cameraZoomMax)
@@ -55,19 +83,21 @@ public class CameraScript : MonoBehaviour {
 			}   
 		}
 		//Pan Movement
+		//camera boundaries
+		//transform.position = new Vector3(Mathf.Clamp(Time.time, 1.0F, 3.0F), 0, 0);
+		//Mathf.Clamp (transform.position.y,-(mapRows/2) + camHeight/2,(mapRows/2) - camHeight/2);
+
 		cameraSpeedCutBy = originalCameraSpeedCutBy * (2f - ((cameraCurrentZoom) / cameraZoomMax));
 		if (Input.GetMouseButtonDown(0))
 		{
 			lastPosition = Input.mousePosition;
 		}
-
 		if (Input.GetMouseButton(0))
 		{
-			Vector3 delta = Input.mousePosition - lastPosition;
-			transform.Translate(-delta.x/cameraSpeedCutBy, -delta.y/cameraSpeedCutBy, 0);
-			lastPosition = Input.mousePosition;
+            Vector3 delta = Input.mousePosition - lastPosition;
+            transform.Translate(-delta.x / cameraSpeedCutBy, -delta.y / cameraSpeedCutBy, 0);
+            lastPosition = Input.mousePosition;
 		}
 
 	}
 }
-

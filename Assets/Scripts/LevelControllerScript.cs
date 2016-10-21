@@ -7,8 +7,8 @@ public class LevelControllerScript : MonoBehaviour {
 	//number of tiles this level supports
 	GameObject tile;
 
-	public int mapRows = 100;
-	public int mapCols = 100;
+	public int mapRows;
+	public int mapCols;
 
 	//grid stores a list at each location, which stores all matrixOccupants
 	private List<GameObject> [,] levelGrid; 
@@ -33,10 +33,13 @@ public class LevelControllerScript : MonoBehaviour {
 			}
 		}
 		//GameObject spawnTile = Instantiate (tile, new Vector3 (0, 0, 0), Quaternion.identity) as GameObject;
-
-
 	}
-	
+	public int GetMapRows(){
+		return mapRows;
+	}
+	public int GetMapCols(){
+		return mapCols;
+	}
 	// Update is called once per frame
 	void Update () {
 	
