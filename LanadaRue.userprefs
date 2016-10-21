@@ -1,9 +1,11 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\CameraScript.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/LevelControllerScript.cs">
     <Files>
-      <File FileName="Assets\CameraScript.cs" Line="61" Column="2" />
-      <File FileName="Assets\Scripts\LevelControllerScript.cs" Line="19" Column="68" />
+      <File FileName="Assets/CameraScript.cs" Line="23" Column="24" />
+      <File FileName="Assets/Scripts/LevelControllerScript.cs" Line="52" Column="2" />
+      <File FileName="Assets/TileScript.cs" Line="16" Column="3" />
+      <File FileName="Assets/Scripts/Player/PlayerCharacterScript.cs" Line="19" Column="2" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
