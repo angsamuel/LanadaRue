@@ -7,10 +7,15 @@ public class LivingThingScript : MonoBehaviour {
     int posX;
     int posY;
 
-	// Use this for initialization
-	void Start () {
-	
-	}
+    private LevelControllerScript levelControllerScript;
+    private GameObject[,] levelGrid;
+
+    // Use this for initialization
+    protected void Start () {
+        levelControllerScript = GameObject.Find("LevelController").GetComponent<LevelControllerScript>();
+        levelGrid = levelControllerScript.GetLevelGrid();
+        Debug.Log(levelGrid.Length);
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -18,12 +23,19 @@ public class LivingThingScript : MonoBehaviour {
 	}
     protected void Move(int x, int y)
     {
+        Debug.Log(posX + ", " + posY );
+        levelGrid[posX, posY].GetComponent<TileScript>().RemoveOccupant();
         posX += x;
         posY += y;
         transform.Translate(new Vector3(x, y, -1));
-
+        levelGrid[posX,posY].GetComponent<TileScript>().SetOccupant(GetComponent<GameObject>());
     }
 
+    public void SetPosVariables(int x, int y)
+    {
+        posX = x;
+        posY = y;
+    }
 	//GET FUNCTIONS
 	public string GetName(){return name;}
 	public string GetGender(){return gender;}

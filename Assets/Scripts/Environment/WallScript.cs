@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class HumanScript : LivingThingScript {
+public class WallScript : TileScript {
 
 	// Use this for initialization
-	protected void Start () {
+	new void Start () {
         base.Start();
+        passable = false;
 	}
 	
 	// Update is called once per frame

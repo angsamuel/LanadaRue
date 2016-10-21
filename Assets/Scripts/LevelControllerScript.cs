@@ -15,7 +15,7 @@ public class LevelControllerScript : MonoBehaviour {
 	public int mapCols;
 
 	//grid stores a list at each location, which stores all matrixOccupants
-	private List<GameObject> [,] levelGrid; 
+	private GameObject [,] levelGrid; 
 
 	public int GetMapRows(){
 		return mapRows;
@@ -26,8 +26,8 @@ public class LevelControllerScript : MonoBehaviour {
 		
 	void Start () {
 		//create levelGrid
-		levelGrid = new List<GameObject> [mapRows,mapCols];
-		tile = Resources.Load ("Prefabs/Tile") as GameObject;
+		levelGrid = new GameObject [mapCols,mapRows];
+		tile = Resources.Load ("Prefabs/Environment/Tile") as GameObject;
 		playerCharacter = Resources.Load ("Prefabs/PlayerCharacter") as GameObject;
 		SpawnTiles();
 		SpawnPlayerCharacter ();
@@ -39,13 +39,22 @@ public class LevelControllerScript : MonoBehaviour {
 
 		for (int r = 0; r < mapRows; r++) {
 			for (int c = 0; c < mapCols; c++) {
-				GameObject spawnTile = Instantiate (tile, new Vector3 (c - mapCols/2 - oddColAdjustment,r - mapRows/2 - oddRowAdjustment, 0), Quaternion.identity) as GameObject;
-			}
+                 GameObject spawnTile = Instantiate (tile, new Vector3 (c - mapCols/2 - oddColAdjustment,r - mapRows/2 - oddRowAdjustment, 0), Quaternion.identity) as GameObject;
+                levelGrid[c, r] = spawnTile;
+            }
 		}
 	}
+    //fix this
 	private void SpawnPlayerCharacter(){
 		GameObject spawnPlayerCharacter = Instantiate (playerCharacter, new Vector3 (.5f, .5f, -1), Quaternion.identity) as GameObject;
+        spawnPlayerCharacter.GetComponent<PlayerCharacterScript>().SetPosVariables(mapCols/2, mapRows/2);
+        
 	}
+    public GameObject[,] GetLevelGrid()
+    {
+        return levelGrid;
+        Debug.Log("got level grid");
+    }
 
 	// Update is called once per frame
 	void Update () {
