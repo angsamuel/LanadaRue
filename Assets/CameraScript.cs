@@ -2,6 +2,10 @@
 using System.Collections;
 
 public class CameraScript : MonoBehaviour {
+	private int levelWidth;
+	private int levelHeight;
+
+	public Camera cam;
 	public float originalCameraSpeedCutBy = 10f;
 	public float cameraSpeedCutBy;
 
@@ -19,6 +23,7 @@ public class CameraScript : MonoBehaviour {
 	void Start ()
 	{
 		//Orthographic size = ((Vert Resolution)/(PPUScale * PPU)) * 0.5
+		//levelWidth = GameObject.Find("LevelController");
 		//calculate maximum camera zoom
 		cameraCurrentZoom = ((Screen.width)/(1 * 32))*0.5f;
 		cameraZoomMax = cameraCurrentZoom;
@@ -30,6 +35,9 @@ public class CameraScript : MonoBehaviour {
 	}
 	void Update () {
 		czm = cameraCurrentZoom;
+		if (transform.position.y < -49.5f + cam.orthographicSize) {
+			transform.position = new Vector3 (transform.position.x, -49.5f + cam.orthographicSize, transform.position.z);;
+		}
 		if (Input.GetAxis("Mouse ScrollWheel") < 0) // back
 		{
 			if (cameraCurrentZoom < cameraZoomMax)
