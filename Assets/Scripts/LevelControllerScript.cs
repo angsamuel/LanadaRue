@@ -6,6 +6,7 @@ public class LevelControllerScript : MonoBehaviour {
 	//controls the generation and control of individual levels
 	//number of tiles this level supports
 	GameObject tile;
+	GameObject wall;
 	GameObject playerCharacter;
 
 	float oddColAdjustment = 0;
@@ -28,6 +29,7 @@ public class LevelControllerScript : MonoBehaviour {
 		//create levelGrid
 		levelGrid = new GameObject [mapCols,mapRows];
 		tile = Resources.Load ("Prefabs/Environment/Tile") as GameObject;
+		wall = Resources.Load ("Prefabs/Environment/Wall") as GameObject;
 		playerCharacter = Resources.Load ("Prefabs/PlayerCharacter") as GameObject;
 		SpawnTiles();
 		SpawnPlayerCharacter ();
@@ -39,16 +41,27 @@ public class LevelControllerScript : MonoBehaviour {
 
 		for (int r = 0; r < mapRows; r++) {
 			for (int c = 0; c < mapCols; c++) {
-                 GameObject spawnTile = Instantiate (tile, new Vector3 (c - mapCols/2 - oddColAdjustment,r - mapRows/2 - oddRowAdjustment, 0), Quaternion.identity) as GameObject;
+                GameObject spawnTile = Instantiate (tile, new Vector3 (c - mapCols/2 - oddColAdjustment,r - mapRows/2 - oddRowAdjustment, 0), Quaternion.identity) as GameObject;
                 levelGrid[c, r] = spawnTile;
+
             }
 		}
+		GameObject spawnWall = Instantiate (wall, new Vector3 (0 - mapCols/2 - oddColAdjustment,0 - mapRows/2 - oddRowAdjustment, 0), Quaternion.identity) as GameObject;
+		Destroy (levelGrid [0, 0]);
+		levelGrid[0, 0] = spawnWall;
 	}
+		
     //fix this
 	private void SpawnPlayerCharacter(){
 		GameObject spawnPlayerCharacter = Instantiate (playerCharacter, new Vector3 (.5f, .5f, -1), Quaternion.identity) as GameObject;
         spawnPlayerCharacter.GetComponent<PlayerCharacterScript>().SetPosVariables(mapCols/2, mapRows/2);
         
+	}
+	//replaces tile in level grid
+	public void ReplaceTile(int x, int y, GameObject newTile){
+		Destroy (levelGrid [x, y]);
+		levelGrid [x, y] = Instantiate (newTile, new Vector3 (0 - mapCols/2 - oddColAdjustment,0 - mapRows/2 - oddRowAdjustment, 0), Quaternion.identity) as GameObject;
+		;
 	}
     public GameObject[,] GetLevelGrid()
     {

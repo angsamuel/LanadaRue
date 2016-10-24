@@ -10,6 +10,7 @@ public class TileScript : MonoBehaviour {
     protected GameObject occupant;
 	protected void Start(){
 		mySprite = GetComponent<Sprite> ();
+		passable = true;
 	}
 	public bool IsPassable(){
 		return passable;

@@ -23,13 +23,14 @@ public class LivingThingScript : MonoBehaviour {
 	}
     protected void Move(int x, int y)
     {
-        Debug.Log(posX + ", " + posY );
-        levelGrid[posX, posY].GetComponent<TileScript>().RemoveOccupant();
-        posX += x;
-        posY += y;
-        transform.Translate(new Vector3(x, y, -1));
-        levelGrid[posX,posY].GetComponent<TileScript>().SetOccupant(GetComponent<GameObject>());
-    }
+		if (levelGrid [posX + x, posY + y].GetComponent<TileScript> ().IsPassable ()) {
+			levelGrid [posX, posY].GetComponent<TileScript> ().RemoveOccupant ();
+			posX += x;
+			posY += y;
+			transform.Translate (new Vector3 (x, y, -1));
+			levelGrid [posX, posY].GetComponent<TileScript> ().SetOccupant (GetComponent<GameObject> ());
+		}
+	}
 
     public void SetPosVariables(int x, int y)
     {
