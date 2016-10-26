@@ -31,17 +31,18 @@ public class LevelControllerScript : MonoBehaviour {
 		tile = Resources.Load ("Prefabs/Environment/Tile") as GameObject;
 		wall = Resources.Load ("Prefabs/Environment/Wall") as GameObject;
 		playerCharacter = Resources.Load ("Prefabs/PlayerCharacter") as GameObject;
+		if (mapCols % 2 == 0) {oddColAdjustment = -.5f;}
+		if (mapRows % 2 == 0) {oddRowAdjustment = -.5f;}
 		SpawnTiles();
 		SpawnPlayerCharacter ();
 	}
 
 	private void SpawnTiles(){
-		if (mapCols % 2 == 0) {oddColAdjustment = -.5f;}
-		if (mapRows % 2 == 0) {oddRowAdjustment = -.5f;}
+		
 
 		for (int r = 0; r < mapRows; r++) {
 			for (int c = 0; c < mapCols; c++) {
-                GameObject spawnTile = Instantiate (tile, new Vector3 (c - mapCols/2 - oddColAdjustment,r - mapRows/2 - oddRowAdjustment, 0), Quaternion.identity) as GameObject;
+				GameObject spawnTile = Instantiate (tile, CoordToVector3(c, r, 0), Quaternion.identity) as GameObject;
                 levelGrid[c, r] = spawnTile;
 
             }
@@ -49,6 +50,10 @@ public class LevelControllerScript : MonoBehaviour {
 		GameObject spawnWall = Instantiate (wall, new Vector3 (0 - mapCols/2 - oddColAdjustment,0 - mapRows/2 - oddRowAdjustment, 0), Quaternion.identity) as GameObject;
 		Destroy (levelGrid [0, 0]);
 		levelGrid[0, 0] = spawnWall;
+	}
+	//converts coordinate in grid to location in scene
+	public Vector3 CoordToVector3(int x ,int y, int z){
+		return new Vector3 (x - mapCols / 2 - oddColAdjustment, y - mapRows / 2 - oddRowAdjustment, z);
 	}
 		
     //fix this

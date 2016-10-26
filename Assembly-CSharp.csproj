@@ -52,7 +52,6 @@
      <Compile Include="Assets\Scripts\LevelControllerScript.cs" />
      <Compile Include="Assets\Scripts\LivingThings\Humans\HumanScript.cs" />
      <Compile Include="Assets\Scripts\LivingThings\LivingThingScript.cs" />
-     <Compile Include="Assets\Scripts\MatrixOccupantScript.cs" />
      <Compile Include="Assets\Scripts\Player\PlayerCharacterScript.cs" />
      <Compile Include="Assets\Scripts\Player\PlayerInputControllerScript.cs" />
  <Reference Include="UnityEngine.UI">
