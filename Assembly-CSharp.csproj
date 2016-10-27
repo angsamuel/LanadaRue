@@ -47,6 +47,7 @@
   <ItemGroup>
      <Compile Include="Assets\CameraScript.cs" />
      <Compile Include="Assets\DragMap.cs" />
+     <Compile Include="Assets\ItemScript.cs" />
      <Compile Include="Assets\Scripts\Environment\TileScript.cs" />
      <Compile Include="Assets\Scripts\Environment\WallScript.cs" />
      <Compile Include="Assets\Scripts\LevelControllerScript.cs" />
@@ -54,6 +55,7 @@
      <Compile Include="Assets\Scripts\LivingThings\LivingThingScript.cs" />
      <Compile Include="Assets\Scripts\Player\PlayerCharacterScript.cs" />
      <Compile Include="Assets\Scripts\Player\PlayerInputControllerScript.cs" />
+     <Compile Include="Assets\SlumsLevelGeneratorScript.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>

@@ -2,9 +2,6 @@
 using System.Collections;
 
 public class PlayerCharacterScript : HumanScript {
-	//position on level grid
-	private int posX;
-	private int posY;
 
     private bool canMoveUp = true;
     private bool canMoveDown = true;
@@ -15,6 +12,7 @@ public class PlayerCharacterScript : HumanScript {
 
     private bool canMoveDownRight = true;
     private bool canMoveDownLeft = true;
+
     private LevelControllerScript levelControllerScript;
 
 	// Use this for initialization

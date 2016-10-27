@@ -9,6 +9,8 @@ public class LevelControllerScript : MonoBehaviour {
 	GameObject wall;
 	GameObject playerCharacter;
 
+	SlumsLevelGeneratorScript slumsLevelGeneratorScript;
+
 	float oddColAdjustment = 0;
 	float oddRowAdjustment = 0;
 
@@ -35,21 +37,20 @@ public class LevelControllerScript : MonoBehaviour {
 		if (mapRows % 2 == 0) {oddRowAdjustment = -.5f;}
 		SpawnTiles();
 		SpawnPlayerCharacter ();
+		GameObject slumsGeneratorPref = Resources.Load ("Prefabs/LevelGenerators/SlumsLevelGenerator") as GameObject;
+		GameObject slumsGenerator = Instantiate(slumsGeneratorPref, CoordToVector3(0, 0, 0), Quaternion.identity) as GameObject;
+		slumsLevelGeneratorScript = slumsGenerator.GetComponent<SlumsLevelGeneratorScript> ();
+	}
+	void Update(){
+	
 	}
 
 	private void SpawnTiles(){
-		
-
 		for (int r = 0; r < mapRows; r++) {
 			for (int c = 0; c < mapCols; c++) {
-				GameObject spawnTile = Instantiate (tile, CoordToVector3(c, r, 0), Quaternion.identity) as GameObject;
-                levelGrid[c, r] = spawnTile;
-
+				ReplaceTile (c, r, tile);
             }
 		}
-		GameObject spawnWall = Instantiate (wall, new Vector3 (0 - mapCols/2 - oddColAdjustment,0 - mapRows/2 - oddRowAdjustment, 0), Quaternion.identity) as GameObject;
-		Destroy (levelGrid [0, 0]);
-		levelGrid[0, 0] = spawnWall;
 	}
 	//converts coordinate in grid to location in scene
 	public Vector3 CoordToVector3(int x ,int y, int z){
@@ -64,18 +65,15 @@ public class LevelControllerScript : MonoBehaviour {
 	}
 	//replaces tile in level grid
 	public void ReplaceTile(int x, int y, GameObject newTile){
-		Destroy (levelGrid [x, y]);
-		levelGrid [x, y] = Instantiate (newTile, new Vector3 (0 - mapCols/2 - oddColAdjustment,0 - mapRows/2 - oddRowAdjustment, 0), Quaternion.identity) as GameObject;
-		;
+		if (levelGrid [x, y] != null) {
+			Destroy (levelGrid [x, y]);
+		}
+		levelGrid [x, y] = Instantiate (newTile, CoordToVector3(x,y, 0), Quaternion.identity) as GameObject;
 	}
     public GameObject[,] GetLevelGrid()
     {
         return levelGrid;
         Debug.Log("got level grid");
     }
-
-	// Update is called once per frame
-	void Update () {
-	
-	}
+		
 }
