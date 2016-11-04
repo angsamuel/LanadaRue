@@ -41,9 +41,6 @@ public class LevelControllerScript : MonoBehaviour {
 		GameObject slumsGenerator = Instantiate(slumsGeneratorPref, CoordToVector3(0, 0, 0), Quaternion.identity) as GameObject;
 		slumsLevelGeneratorScript = slumsGenerator.GetComponent<SlumsLevelGeneratorScript> ();
 	}
-	void Update(){
-	
-	}
 
 	private void SpawnTiles(){
 		for (int r = 0; r < mapRows; r++) {
