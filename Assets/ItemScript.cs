@@ -7,6 +7,7 @@ public class ItemScript : MonoBehaviour {
 	private int posX;
 	private int posY;
 
+	private int weight;
 	private int size;
 	private int rarity;
 
@@ -25,4 +26,18 @@ public class ItemScript : MonoBehaviour {
 	public void SetName(string newName){
 		name = newName;
 	}
+    public void SetPosition(int x, int y)
+    {
+        posX = x;
+        posY = y;
+    }
+    public int GetPosX()
+    {
+        return posX;
+    }
+    public int GetPosY()
+    {
+        return posY;
+    }
+
 }

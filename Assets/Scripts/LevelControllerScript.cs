@@ -9,6 +9,8 @@ public class LevelControllerScript : MonoBehaviour {
 	GameObject wall;
 	GameObject playerCharacter;
 
+    List<GameObject> itemPool = new List<GameObject>();
+
 	SlumsLevelGeneratorScript slumsLevelGeneratorScript;
 
 	float oddColAdjustment = 0;
@@ -67,10 +69,22 @@ public class LevelControllerScript : MonoBehaviour {
 		}
 		levelGrid [x, y] = Instantiate (newTile, CoordToVector3(x,y, 0), Quaternion.identity) as GameObject;
 	}
+    public void SpawnItem(int x, int y, GameObject newItem)
+    {
+        Debug.Log("SpawneItem called");
+       GameObject spawnedItem = Instantiate(newItem, CoordToVector3(x, y, -1), Quaternion.identity) as GameObject;
+       spawnedItem.GetComponent<ItemScript>().SetPosition(x, y);
+       itemPool.Add(spawnedItem);
+    }
+
     public GameObject[,] GetLevelGrid()
     {
         return levelGrid;
         Debug.Log("got level grid");
+    }
+    public List<GameObject> GetItemPool()
+    {
+        return itemPool;
     }
 		
 }

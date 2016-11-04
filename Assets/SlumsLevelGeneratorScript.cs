@@ -16,11 +16,13 @@ public class SlumsLevelGeneratorScript : MonoBehaviour {
 	public int maxPlotSize = 15;
 
 	private GameObject woodTile;
+    private GameObject item;
 
-
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
 		woodTile = Resources.Load ("Prefabs/Environment/WoodWall") as GameObject;
+        item = Resources.Load("Prefabs/Items/Item") as GameObject;
+
 		levelController = GameObject.Find ("LevelController") as GameObject;
 		levelControllerScript = levelController.GetComponent<LevelControllerScript>();
 		mapRows = levelControllerScript.GetMapRows();
@@ -51,15 +53,14 @@ public class SlumsLevelGeneratorScript : MonoBehaviour {
 
 		int enterWidth = Random.Range (3, 5);
 		int enterHeight = Random.Range (3, 5);
-		/*
-		for (int w = 0; w < enterHeight; ++w) {
-			for (int h = 0; h < enterHeight; ++h) {
-				levelControllerScript.ReplaceTile (w, h, woodTile);
-			}
-		}*/
+
 		for (int i = 0; i < 100; ++i) {
 			levelControllerScript.ReplaceTile (Random.Range(0,mapCols), Random.Range(0,mapRows), woodTile);
 		}
+        for(int i =0; i<100; ++i)
+        {
+            levelControllerScript.SpawnItem(Random.Range(0, mapCols), Random.Range(0, mapRows), item);
+        }
 
 		levelControllerScript.ReplaceTile (5, 5, woodTile);
 
