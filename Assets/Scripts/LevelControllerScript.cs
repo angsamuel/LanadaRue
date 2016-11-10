@@ -47,7 +47,7 @@ public class LevelControllerScript : MonoBehaviour {
 	private void SpawnTiles(){
 		for (int r = 0; r < mapRows; r++) {
 			for (int c = 0; c < mapCols; c++) {
-				ReplaceTile (c, r, tile);
+				//ReplaceTile (c, r, tile);
             }
 		}
 	}
