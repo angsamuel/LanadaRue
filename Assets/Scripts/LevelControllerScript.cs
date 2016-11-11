@@ -43,7 +43,7 @@ public class LevelControllerScript : MonoBehaviour {
 		SpawnPlayerCharacter ();
 		GameObject slumsGeneratorPref = Resources.Load ("Prefabs/LevelGenerators/SlumsLevelGenerator") as GameObject;
         dumbGen = Resources.Load("Prefabs/LevelGenerators/DungeonGenerator") as GameObject;
-        GameObject myDumbGen = Instantiate(dumbGen, new Vector3(0,0,0), Quaternion.identity) as GameObject;
+        //GameObject myDumbGen = Instantiate(dumbGen, new Vector3(0,0,0), Quaternion.identity) as GameObject;
         //GameObject slumsGenerator = Instantiate(slumsGeneratorPref, CoordToVector3(0, 0, 0), Quaternion.identity) as GameObject;
         //slumsLevelGeneratorScript = slumsGenerator.GetComponent<SlumsLevelGeneratorScript> ();
     }

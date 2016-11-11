@@ -6,6 +6,8 @@ public class TileScript : MonoBehaviour {
 	protected bool passable;
 	protected Sprite mySprite;
 
+	public string id;
+
     protected bool occupied = false;
     protected GameObject occupant;
 	protected void Start(){
