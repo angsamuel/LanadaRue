@@ -29,7 +29,7 @@ public class LivingThingScript : MonoBehaviour {
 				levelGrid [posX, posY].GetComponent<TileScript> ().RemoveOccupant ();
 				posX += x;
 				posY += y;
-				transform.Translate (new Vector3 (x, y, -1));
+				transform.Translate (new Vector3 (x, y, 0));
 				levelGrid [posX, posY].GetComponent<TileScript> ().SetOccupant (GetComponent<GameObject> ());
 			}
 		}

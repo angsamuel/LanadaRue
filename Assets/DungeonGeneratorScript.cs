@@ -19,7 +19,7 @@ public class DungeonGeneratorScript : MonoBehaviour {
 
 	//number of objects to generate on the map
 	int _objects;
-	public const int ChanceRoom = 75;
+	public const int ChanceRoom = 100;
 
     //our map
     private GameObject[,] _levelGrid;
@@ -150,13 +150,14 @@ public class DungeonGeneratorScript : MonoBehaviour {
 	{
 		try
 		{
-			Debug.Log(x + ", " + y);
+			//Debug.Log(x + ", " + y);
 			return this._levelGrid[x , y];
 		}
 		catch (IndexOutOfRangeException)
 		{
-			//new { x, y }.Dump("exceptional");
-			throw;
+            //new { x, y }.Dump("exceptional");
+            //throw;
+            return null;
 		}
 	}
 	public int GetRand(int min, int max)
@@ -188,7 +189,7 @@ public class DungeonGeneratorScript : MonoBehaviour {
 				if (ytemp < 0 || ytemp > this._ysize) return false; // oh boho, it was!
 				if (GetCellType(xtemp, ytemp).GetType() != unusedTile.GetType()) return false;
 			}
-
+            //Debug.Log("starting building north...");
 			// if we're still here, let's start building
 			Corridors++;
 			for (ytemp = y; ytemp > (y - len); ytemp--)
@@ -206,10 +207,11 @@ public class DungeonGeneratorScript : MonoBehaviour {
 			for (xtemp = x; xtemp < (x + len); xtemp++)
 			{
 				if (xtemp < 0 || xtemp > this._xsize) return false;
+                if (ytemp < 0 || ytemp > _ysize) return false;
 				if (GetCellType(xtemp, ytemp).GetType() != unusedTile.GetType()) return false;
 			}
-
-			Corridors++;
+                //Debug.Log("starting building east...");
+                Corridors++;
 			for (xtemp = x; xtemp < (x + len); xtemp++)
 			{
 				this.SetCell(xtemp, ytemp, floor);
@@ -227,8 +229,8 @@ public class DungeonGeneratorScript : MonoBehaviour {
 				if (ytemp < 0 || ytemp > this._ysize) return false;
 				if (GetCellType(xtemp, ytemp).GetType() != unusedTile.GetType()) return false;
 			}
-
-			Corridors++;
+               // Debug.Log("starting building south...");
+                Corridors++;
 			for (ytemp = y; ytemp < (y + len); ytemp++)
 			{
 				this.SetCell(xtemp, ytemp, floor);
@@ -245,8 +247,8 @@ public class DungeonGeneratorScript : MonoBehaviour {
 				if (xtemp < 0 || xtemp > this._xsize) return false;
 				if (GetCellType(xtemp, ytemp).GetType() != unusedTile.GetType()) return false;
 			}
-
-			Corridors++;
+               // Debug.Log("starting building west...");
+                Corridors++;
 			for (xtemp = x; xtemp > (x - len); xtemp--)
 			{
 				this.SetCell(xtemp, ytemp, floor);
@@ -275,6 +277,7 @@ public class DungeonGeneratorScript : MonoBehaviour {
                 output.Add(p);
             }
         }
+      
         return output;
 
     }
@@ -287,6 +290,7 @@ public class DungeonGeneratorScript : MonoBehaviour {
     }*/
     public List<PointI> GetSurroundings(PointI v){
         List<PointI> firstList = GetSurroundingPoints(v);
+        //Debug.Log("surrounding count " + firstList.Count);
         List<PointI> output = new List<PointI>();
         foreach (PointI p in firstList)
         {
@@ -294,7 +298,7 @@ public class DungeonGeneratorScript : MonoBehaviour {
             p.pointTile = ti;
             output.Add(p);
         }
-        
+        //Debug.Log("output count " + output.Count);
         return output;   
     }
 
@@ -322,12 +326,12 @@ public class DungeonGeneratorScript : MonoBehaviour {
         // choose the way it's pointing at
         //splunk1
         List<PointI> points = GetRoomPoints(x, y, xlen, ylen, direction);
-        Debug.Log("points size: " + points.Count);
+        //Debug.Log("points size: " + points.Count);
         // Check if there's enough space left for it
         if (
             points.Any(
                 s =>
-				s.Y < 0 || s.Y > this._ysize || s.X < 0 || s.X > this._xsize || this.GetCellType(s.X, s.Y).GetType() != unusedTile.GetType())) return false;
+				s.Y < 0 || s.Y > this._ysize-1 || s.X < 0 || s.X > this._xsize-1 || this.GetCellType(s.X, s.Y).GetType() != unusedTile.GetType())) return false;
        
         //logger went here
 
@@ -383,11 +387,11 @@ public class DungeonGeneratorScript : MonoBehaviour {
 
         // adjust the size of the map, if it's smaller or bigger than the limits
         if (inx < 3) this._xsize = 3;
-        else if (inx > xmax) this._xsize = xmax;
+        else if (inx >= xmax) this._xsize = xmax;
         else this._xsize = inx;
 
         if (iny < 3) this._ysize = 3;
-        else if (iny > ymax) this._ysize = ymax;
+        else if (iny >= ymax) this._ysize = ymax;
         else this._ysize = iny;
 
         //Console.WriteLine(MsgXSize + this._xsize);
@@ -419,7 +423,7 @@ public class DungeonGeneratorScript : MonoBehaviour {
             // check if we've reached our quota
             if (currentFeatures == this._objects)
             {
-				Debug.Log ("enough features, breaking out");
+				//Debug.Log ("enough features, breaking out");
                 break;
             }
 
@@ -454,20 +458,22 @@ public class DungeonGeneratorScript : MonoBehaviour {
 					//HERE WE ARE
 
                     //Debug.Log("wall or corr"); //!!!
-                    var surroundings = this.GetSurroundings(new PointI() { X = newx, Y = newy });
+                    List<PointI> surroundings = this.GetSurroundings(new PointI() { X = newx, Y = newy });
 
                     // check if we can reach the place
                     //var canReach = surroundings.FirstOrDefault(s => s.Item3 == Tile.Corridor || s.Item3 == Tile.DirtFloor);
 
                     PointI canReach = new PointI { };
+                    List<PointI> validSurroundings = new List<PointI>();
                     foreach(PointI p in surroundings)
                     {
-						if(p.pointTile.GetType() == corridorTile.GetType() || p.pointTile.GetType() == floorTile.GetType())
+						if(p.pointTile.GetType() == corridorTile.GetType() || p.pointTile.GetType() == floorTile.GetType() || p.pointTile.GetType() ==unusedTile.GetType())
                         {
-                            canReach = p;
-                            break;
+                            validSurroundings.Add(p);
                         }
                     }
+                    canReach = validSurroundings[UnityEngine.Random.Range(0, validSurroundings.Count)];
+
                     if (canReach == null)
                     {
 						//Debug.Log ("found no canReach");
@@ -478,22 +484,22 @@ public class DungeonGeneratorScript : MonoBehaviour {
                         switch (validTile)
                     {
                         case Direction.NORTH:
-							Debug.Log ("n");
+							//Debug.Log ("n");
                             xmod = 0;
                             ymod = -1;
                             break;
                         case Direction.EAST:
-							Debug.Log ("e");
+							//Debug.Log ("e");
                             xmod = 1;
                             ymod = 0;
                             break;
                         case Direction.SOUTH:
-							Debug.Log ("s");
+							//Debug.Log ("s");
                             xmod = 0;
                             ymod = 1;
                             break;
 						case Direction.WEST:
-							Debug.Log ("w");
+							//Debug.Log ("w");
                             xmod = -1;
                             ymod = 0;
                             break;
@@ -502,29 +508,29 @@ public class DungeonGeneratorScript : MonoBehaviour {
                     }
 
 					if (validTile.HasValue) {
-						Debug.Log ("WORKS HERE-----------");
+						//Debug.Log ("WORKS HERE-----------");
 					}
 
                     // check that we haven't got another door nearby, so we won't get alot of openings besides
                     // each other
-
+                    /*
 					if (GetCellType (newx, newy + 1).GetType () == doorTile.GetType ()) { // north
-						Debug.Log ("Found a north door");
-						//validTile = null;
+						//Debug.Log ("Found a north door");
+					    validTile = null;
 					} else if (GetCellType (newx - 1, newy).GetType () == doorTile.GetType ()) { // east
-						//validTile = null;
-						Debug.Log ("Found an east door");
+						validTile = null;
+						//Debug.Log ("Found an east door");
 					} else if (GetCellType (newx, newy - 1).GetType () == doorTile.GetType ()) { // south
-						Debug.Log ("Found a south door");
-						//validTile = null;
+						//Debug.Log ("Found a south door");
+						validTile = null;
 					} else if (GetCellType (newx + 1, newy).GetType () == doorTile.GetType ()) { // west
-						//validTile = null;
-						Debug.Log ("Found a west door");
+						validTile = null;
+						//Debug.Log ("Found a west door");
 					}
-
+                    */
                     // if we can, jump out of the loop and continue with the rest
 					if (validTile.HasValue) {
-						Debug.Log ("WORKS HERE TOO-----------");
+						//Debug.Log ("WORKS HERE TOO-----------");
 						break;
 					}
                 }
@@ -532,18 +538,18 @@ public class DungeonGeneratorScript : MonoBehaviour {
 
             if (validTile.HasValue)
             {
-                Debug.Log("has value");
+               // Debug.Log("has value");
                 // choose what to build now at our newly found place, and at what direction
                 int feature = this.GetRand(0, 100);
                 if (feature <= ChanceRoom)
                 { // a new room
-                    Debug.Log("new room!");
+                   // Debug.Log("new room!");
                     if (this.MakeRoom(newx + xmod, newy + ymod, 8, 6, validTile.Value))
                     {
                         currentFeatures++; // add to our quota
 
                         // then we mark the wall opening with a door
-                        this.SetCell(newx, newy, doorTile);
+                        //this.SetCell(newx, newy, doorTile);
 
                         // clean up infront of the door so we can reach it
                         this.SetCell(newx + xmod, newy + ymod, floorTile);
@@ -556,7 +562,7 @@ public class DungeonGeneratorScript : MonoBehaviour {
                         // same thing here, add to the quota and a door
                         currentFeatures++;
 
-                        this.SetCell(newx, newy, doorTile);
+                        //this.SetCell(newx, newy, doorTile);
                     }
                 }
             }
@@ -576,7 +582,7 @@ public class DungeonGeneratorScript : MonoBehaviour {
     //WORKING
     void Initialize()
     {
-        UnityEngine.Debug.Log("initialization called");
+        //UnityEngine.Debug.Log("initialization called");
         for (int y = 0; y < this._ysize; y++)
         {
             for (int x = 0; x < this._xsize; x++)
@@ -598,11 +604,12 @@ public class DungeonGeneratorScript : MonoBehaviour {
 
     public void SetCell(int x, int y, GameObject newTile){
         //Debug.Log("Replacing tile...");
+        //if(x > xmax)
 		ReplaceTile (x, y, newTile);
 	}
 
 	public void ReplaceTile(int x, int y, GameObject newTile){
-		Debug.Log (x + ", " + y);
+		//Debug.Log (x + ", " + y);
 		if (_levelGrid [x, y] != null) {
 			Destroy (_levelGrid [x, y]);
 		}
