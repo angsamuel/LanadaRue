@@ -87,6 +87,9 @@ public class LevelControllerScript : MonoBehaviour {
         return levelGrid;
         Debug.Log("got level grid");
     }
+	public void SetLevelGrid(GameObject[,] lg){
+		levelGrid = lg;
+	}
     public List<GameObject> GetItemPool()
     {
         return itemPool;

@@ -23,12 +23,15 @@ public class LivingThingScript : MonoBehaviour {
 	}
     protected void Move(int x, int y)
     {
-		if (levelGrid [posX + x, posY + y].GetComponent<TileScript> ().IsPassable ()) {
-			levelGrid [posX, posY].GetComponent<TileScript> ().RemoveOccupant ();
-			posX += x;
-			posY += y;
-			transform.Translate (new Vector3 (x, y, -1));
-			levelGrid [posX, posY].GetComponent<TileScript> ().SetOccupant (GetComponent<GameObject> ());
+		levelGrid = levelControllerScript.GetLevelGrid();
+		if (levelGrid [posX + x, posY + y] != null) {
+			if (levelGrid [posX + x, posY + y].GetComponent<TileScript> ().IsPassable ()) {
+				levelGrid [posX, posY].GetComponent<TileScript> ().RemoveOccupant ();
+				posX += x;
+				posY += y;
+				transform.Translate (new Vector3 (x, y, -1));
+				levelGrid [posX, posY].GetComponent<TileScript> ().SetOccupant (GetComponent<GameObject> ());
+			}
 		}
 	}
 

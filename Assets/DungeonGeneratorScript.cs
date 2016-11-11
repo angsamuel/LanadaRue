@@ -28,6 +28,10 @@ public class DungeonGeneratorScript : MonoBehaviour {
 	//readonly IRandomize _rnd;
 	//readonly OverflowAction<string> _logger;
 
+	//adjusting tiles
+	float oddColAdjustment = 0;
+	float oddRowAdjustment = 0;
+
 	//direction
 	public enum Direction {NORTH, SOUTH, EAST, WEST};
 
@@ -49,13 +53,16 @@ public class DungeonGeneratorScript : MonoBehaviour {
     GameObject woodWallTile;
     // Use this for initialization
     void Start () {
+		if (xmax % 2 == 0) {oddColAdjustment = -.5f;}
+		if (ymax % 2 == 0) {oddRowAdjustment = -.5f;}
+
 		levelControllerScript = GameObject.Find ("LevelController").GetComponent<LevelControllerScript> ();
 		ymax = levelControllerScript.GetMapCols ();
 		xmax = levelControllerScript.GetMapRows ();
 		_levelGrid = levelControllerScript.GetLevelGrid ();
 
-		corridorTile = Resources.Load ("Prefabs/Environment/Tile") as GameObject;
-        floorTile = Resources.Load("Prefabs/Environment/Tile") as GameObject;
+		corridorTile = Resources.Load ("Prefabs/Environment/Corridor") as GameObject;
+        floorTile = Resources.Load("Prefabs/Environment/Floor") as GameObject;
         wallTile = Resources.Load("Prefabs/Environment/Wall") as GameObject;
         doorTile = Resources.Load("Prefabs/Environment/Door") as GameObject;
         unusedTile = Resources.Load("Prefabs/Environment/Unused") as GameObject;
@@ -65,6 +72,7 @@ public class DungeonGeneratorScript : MonoBehaviour {
 
         CreateDungeon(xmax, ymax, 100);
         //Initialize();
+		levelControllerScript.SetLevelGrid(_levelGrid);
     }
 
 	// Update is called once per frame
@@ -142,6 +150,7 @@ public class DungeonGeneratorScript : MonoBehaviour {
 	{
 		try
 		{
+			Debug.Log(x + ", " + y);
 			return this._levelGrid[x , y];
 		}
 		catch (IndexOutOfRangeException)
@@ -177,7 +186,7 @@ public class DungeonGeneratorScript : MonoBehaviour {
 			for (ytemp = y; ytemp > (y - len); ytemp--)
 			{
 				if (ytemp < 0 || ytemp > this._ysize) return false; // oh boho, it was!
-				if (GetCellType(xtemp, ytemp) != unusedTile) return false;
+				if (GetCellType(xtemp, ytemp).GetType() != unusedTile.GetType()) return false;
 			}
 
 			// if we're still here, let's start building
@@ -197,7 +206,7 @@ public class DungeonGeneratorScript : MonoBehaviour {
 			for (xtemp = x; xtemp < (x + len); xtemp++)
 			{
 				if (xtemp < 0 || xtemp > this._xsize) return false;
-				if (GetCellType(xtemp, ytemp) != unusedTile) return false;
+				if (GetCellType(xtemp, ytemp).GetType() != unusedTile.GetType()) return false;
 			}
 
 			Corridors++;
@@ -216,7 +225,7 @@ public class DungeonGeneratorScript : MonoBehaviour {
 			for (ytemp = y; ytemp < (y + len); ytemp++)
 			{
 				if (ytemp < 0 || ytemp > this._ysize) return false;
-				if (GetCellType(xtemp, ytemp) != unusedTile) return false;
+				if (GetCellType(xtemp, ytemp).GetType() != unusedTile.GetType()) return false;
 			}
 
 			Corridors++;
@@ -234,7 +243,7 @@ public class DungeonGeneratorScript : MonoBehaviour {
 			for (xtemp = x; xtemp > (x - len); xtemp--)
 			{
 				if (xtemp < 0 || xtemp > this._xsize) return false;
-				if (GetCellType(xtemp, ytemp) != unusedTile) return false;
+				if (GetCellType(xtemp, ytemp).GetType() != unusedTile.GetType()) return false;
 			}
 
 			Corridors++;
@@ -281,7 +290,7 @@ public class DungeonGeneratorScript : MonoBehaviour {
         List<PointI> output = new List<PointI>();
         foreach (PointI p in firstList)
         {
-            GameObject ti = GetCellType(p.X, p.Y);
+			GameObject ti = GetCellType(p.X, p.Y);
             p.pointTile = ti;
             output.Add(p);
         }
@@ -315,16 +324,16 @@ public class DungeonGeneratorScript : MonoBehaviour {
         List<PointI> points = GetRoomPoints(x, y, xlen, ylen, direction);
         Debug.Log("points size: " + points.Count);
         // Check if there's enough space left for it
-       /* if (
+        if (
             points.Any(
                 s =>
-                s.Y < 0 || s.Y > this._ysize || s.X < 0 || s.X > this._xsize || this.GetCellType(s.X, s.Y) != unusedTile)) return false;
-       */
+				s.Y < 0 || s.Y > this._ysize || s.X < 0 || s.X > this._xsize || this.GetCellType(s.X, s.Y).GetType() != unusedTile.GetType())) return false;
+       
         //logger went here
 
         foreach (var p in points)
         {
-            Debug.Log("making dat room");
+            //Debug.Log("making dat room");
             this.SetCell(p.X, p.Y, IsWall(x, y, xlen, ylen, p.X, p.Y, direction) ? Wall : Floor);
         }
 
@@ -410,6 +419,7 @@ public class DungeonGeneratorScript : MonoBehaviour {
             // check if we've reached our quota
             if (currentFeatures == this._objects)
             {
+				Debug.Log ("enough features, breaking out");
                 break;
             }
 
@@ -427,11 +437,23 @@ public class DungeonGeneratorScript : MonoBehaviour {
                 newx = this.GetRand(1, this._xsize - 1);
                 newy = this.GetRand(1, this._ysize - 1);
 
-                //HERE WE ARE
+				//Debug.Log ("testing tile at" + newx + " " + newy);
+				/*
+				if (GetCellType (newx, newy).GetType() == unusedTile.GetType()) {
+				//	Debug.Log ("found unused");
+				}else if(GetCellType (newx, newy).GetType() == floorTile.GetType() || GetCellType (newx, newy).GetType() == corridorTile.GetType()){
+					Debug.Log ("found floor");
+				}else {
+					Debug.Log ("wall");
+				}*/
+				//GetCellType (newx, newy).GetType ();
 
-                if (GetCellType(newx, newy) == wallTile || GetCellType(newx, newy) == corridorTile)
+
+				if (GetCellType(newx, newy).GetType() == wallTile.GetType() || GetCellType(newx, newy).GetType() == corridorTile.GetType())
                 {
-                    Debug.Log("wall or corr"); //!!!
+					//HERE WE ARE
+
+                    //Debug.Log("wall or corr"); //!!!
                     var surroundings = this.GetSurroundings(new PointI() { X = newx, Y = newy });
 
                     // check if we can reach the place
@@ -440,7 +462,7 @@ public class DungeonGeneratorScript : MonoBehaviour {
                     PointI canReach = new PointI { };
                     foreach(PointI p in surroundings)
                     {
-                        if(p.pointTile == corridorTile || p.pointTile == floorTile)
+						if(p.pointTile.GetType() == corridorTile.GetType() || p.pointTile.GetType() == floorTile.GetType())
                         {
                             canReach = p;
                             break;
@@ -448,25 +470,30 @@ public class DungeonGeneratorScript : MonoBehaviour {
                     }
                     if (canReach == null)
                     {
+						//Debug.Log ("found no canReach");
                         continue;
                     }
                     validTile = canReach.direction;
 
-                        switch (canReach.direction)
+                        switch (validTile)
                     {
                         case Direction.NORTH:
+							Debug.Log ("n");
                             xmod = 0;
                             ymod = -1;
                             break;
                         case Direction.EAST:
+							Debug.Log ("e");
                             xmod = 1;
                             ymod = 0;
                             break;
                         case Direction.SOUTH:
+							Debug.Log ("s");
                             xmod = 0;
                             ymod = 1;
                             break;
-                        case Direction.WEST:
+						case Direction.WEST:
+							Debug.Log ("w");
                             xmod = -1;
                             ymod = 0;
                             break;
@@ -474,26 +501,32 @@ public class DungeonGeneratorScript : MonoBehaviour {
                             throw new InvalidOperationException();
                     }
 
+					if (validTile.HasValue) {
+						Debug.Log ("WORKS HERE-----------");
+					}
 
                     // check that we haven't got another door nearby, so we won't get alot of openings besides
                     // each other
 
-                    if (GetCellType(newx, newy + 1) == doorTile) // north
-                    {
-                        validTile = null;
-
-                    }
-
-                    else if (GetCellType(newx - 1, newy) == doorTile) // east
-                        validTile = null;
-                    else if (GetCellType(newx, newy - 1) == doorTile) // south
-                        validTile = null;
-                    else if (GetCellType(newx + 1, newy) == doorTile) // west
-                        validTile = null;
-
+					if (GetCellType (newx, newy + 1).GetType () == doorTile.GetType ()) { // north
+						Debug.Log ("Found a north door");
+						//validTile = null;
+					} else if (GetCellType (newx - 1, newy).GetType () == doorTile.GetType ()) { // east
+						//validTile = null;
+						Debug.Log ("Found an east door");
+					} else if (GetCellType (newx, newy - 1).GetType () == doorTile.GetType ()) { // south
+						Debug.Log ("Found a south door");
+						//validTile = null;
+					} else if (GetCellType (newx + 1, newy).GetType () == doorTile.GetType ()) { // west
+						//validTile = null;
+						Debug.Log ("Found a west door");
+					}
 
                     // if we can, jump out of the loop and continue with the rest
-                    if (validTile.HasValue) break;
+					if (validTile.HasValue) {
+						Debug.Log ("WORKS HERE TOO-----------");
+						break;
+					}
                 }
             }
 
@@ -565,9 +598,19 @@ public class DungeonGeneratorScript : MonoBehaviour {
 
     public void SetCell(int x, int y, GameObject newTile){
         //Debug.Log("Replacing tile...");
-		levelControllerScript.ReplaceTile (x, y, newTile);
+		ReplaceTile (x, y, newTile);
 	}
 
+	public void ReplaceTile(int x, int y, GameObject newTile){
+		Debug.Log (x + ", " + y);
+		if (_levelGrid [x, y] != null) {
+			Destroy (_levelGrid [x, y]);
+		}
+		_levelGrid [x, y] = Instantiate (newTile, CoordToVector3(x,y, 0), Quaternion.identity) as GameObject;
+		levelControllerScript.SetLevelGrid (_levelGrid);
+	}
 
-
+	public Vector3 CoordToVector3(int x ,int y, int z){
+		return new Vector3 (x - ymax / 2 - oddColAdjustment, y - xmax / 2 - oddRowAdjustment, z);
+	}
 }
