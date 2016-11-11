@@ -5,9 +5,10 @@ using System.Collections.Generic;
 public class LevelControllerScript : MonoBehaviour {
 	//controls the generation and control of individual levels
 	//number of tiles this level supports
-	GameObject tile;
+	GameObject unusedTile;
 	GameObject wall;
 	GameObject playerCharacter;
+	GameObject levelGenerator;
 
     GameObject dumbGen;
 
@@ -34,7 +35,7 @@ public class LevelControllerScript : MonoBehaviour {
 	void Start () {
 		//create levelGrid
 		levelGrid = new GameObject [mapCols,mapRows];
-		tile = Resources.Load ("Prefabs/Environment/Tile") as GameObject;
+		unusedTile = Resources.Load ("Prefabs/Environment/Unused") as GameObject;
 		wall = Resources.Load ("Prefabs/Environment/Wall") as GameObject;
 		playerCharacter = Resources.Load ("Prefabs/PlayerCharacter") as GameObject;
 		if (mapCols % 2 == 0) {oddColAdjustment = -.5f;}
@@ -46,12 +47,14 @@ public class LevelControllerScript : MonoBehaviour {
         //GameObject myDumbGen = Instantiate(dumbGen, new Vector3(0,0,0), Quaternion.identity) as GameObject;
         //GameObject slumsGenerator = Instantiate(slumsGeneratorPref, CoordToVector3(0, 0, 0), Quaternion.identity) as GameObject;
         //slumsLevelGeneratorScript = slumsGenerator.GetComponent<SlumsLevelGeneratorScript> ();
+		levelGenerator = Resources.Load("Prefabs/LevelGenerators/LevelGeneratorDefault") as GameObject;
+		GameObject lg = Instantiate (levelGenerator, new Vector3 (0, 0, 0), Quaternion.identity) as GameObject;
     }
 
 	private void SpawnTiles(){
 		for (int r = 0; r < mapRows; r++) {
 			for (int c = 0; c < mapCols; c++) {
-				//ReplaceTile (c, r, tile);
+				ReplaceTile (c, r, unusedTile);
             }
 		}
 	}

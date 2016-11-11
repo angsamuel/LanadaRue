@@ -14,6 +14,8 @@ public class LevelGeneratorDefaultScript : MonoBehaviour {
 	List<Rect> _rooms;
 	List<Rect> _exits;
 
+	LevelControllerScript levelControllerScript;
+
 	int randomInt(int exclusiveMax){
 		return (int)Random.Range (0, exclusiveMax-1); 
 	}
@@ -51,15 +53,46 @@ public class LevelGeneratorDefaultScript : MonoBehaviour {
 	public void Dungeon(int width, int height){
 		_width = width;
 		_height = height;
-		_tiles = new List<Tile>(width*height);
-		for(int i = 0; i<_tiles.Count; ++i){
+		_tiles = new List<Tile>();
+		for(int i = 0; i<width*height; ++i){
 			_tiles.Add(Tile.Unused);
 		}
+		//Debug.Log ("initial _tiles.Count " + _tiles.Count);
 		_rooms = new List<Rect> ();
 		_exits = new List<Rect> ();
 	}
 
 	void generate(int maxFeatures){
+
+		//place the first room in the center
+		if (!makeRoom (_width / 2, _height / 2, randomDirection ())) {
+			Debug.Log ("Unable to place first room.");
+			return;
+		}
+
+		for (int i = 1; i < maxFeatures; ++i) {
+			if (!createFeature ()) {
+				Debug.Log ("Unable to place more features (placed " + i + ")");
+				break;
+			}
+		}
+
+		if(!placeObject(Tile.Door)){
+			Debug.Log("Unable to place up stairs.");
+			return;
+		}
+
+		if(!placeObject(Tile.Door)){
+			Debug.Log("unable to place down stairs.");
+		}
+
+		for (int i = 0; i < _tiles.Count; ++i) {
+			if (_tiles [i] == Tile.Unused) {
+				//maybe something idk
+			} else if (_tiles [i] == Tile.Floor) {
+				//no clue
+			}
+		}
 
 	}
 
@@ -73,13 +106,40 @@ public class LevelGeneratorDefaultScript : MonoBehaviour {
 	}
 
 	void print(){
+		for (int y = 0; y < _height; ++y) {
+			for (int x = 0; x < _width; ++x) {
+				//replace the tile with getTile(x, y)
+				switch (getTile (x, y)) {
+				case Tile.Corridor:
+					levelControllerScript.ReplaceTile (x, y, corridor);
+					break;
+				case Tile.Floor:
+					levelControllerScript.ReplaceTile (x, y, floor);
+					break;
+				case Tile.Door:
+					levelControllerScript.ReplaceTile (x, y, door);
+					break;
+				case Tile.Wall:
+					levelControllerScript.ReplaceTile (x, y, wall);
+					break;
+				case Tile.Unused:
+					levelControllerScript.ReplaceTile (x, y, unused);
+					break;
+				default:
+					levelControllerScript.ReplaceTile (x, y, unused);
+					break;
+				}
 
+			}
+		}
 	}
 
 	Tile getTile(int x, int y){
 		if (x < 0 || y < 0 || x >= _width || y >= _height) {
 			return Tile.Unused;
 		}
+		//Debug.Log (x + ", " + y + " " + (x + y * _width));
+		//Debug.Log (_tiles.Count);
 		return _tiles [x + y * _width];
 	}
 
@@ -88,6 +148,63 @@ public class LevelGeneratorDefaultScript : MonoBehaviour {
 	}
 
 	//create features
+	bool createFeature(){
+		for (int i = 0; i < 1000; ++i) {
+			if (_exits.Count < 1) {
+				break;
+			}
+			int r = randomInt (_exits.Count);
+			int x = randomInt (_exits [r].x, _exits [r].x + _exits [r].width - 1);
+			int y = randomInt (_exits [r].y, _exits [r].y + _exits [r].height - 1);
+
+			for (int j = 0; j < (int)Direction.DirectionCount; ++j) {
+				if (createFeature (x, y, (Direction)(j))) {
+					_exits.RemoveAt (r);
+					return true;
+				}
+
+			}
+
+		}
+		return false;
+
+	}
+
+	bool createFeature(int x, int y, Direction dir){
+		int roomChance = 50; //corridorChance = 100 - roomChance
+		int dx = 0;
+		int dy = 0;
+
+		if (dir == Direction.North) {
+			dy = 1;
+		} else if (dir == Direction.South) {
+			dy = -1;
+		} else if (dir == Direction.West) {
+			dx = 1;
+		} else if (dir == Direction.East) {
+			dx = -1;
+		}
+		if (getTile (x + dx, y + dy) != Tile.Floor && getTile (x + dx, y + dy) != Tile.Corridor) {
+			return false;
+		}
+		if (randomInt (100) < roomChance) {
+			if (makeRoom (x, y, dir)) {
+				setTile(x, y, Tile.Door);
+				return true;
+			}
+		}else{
+			if(makeCorridor(x, y, dir)){
+				if(getTile(x + dx, y + dy) == Tile.Floor){
+					setTile(x, y, Tile.Door);
+				}else{
+					setTile(x, y, Tile.Corridor);
+				}
+				return true;
+			}
+
+		}
+		return false;
+	}
 
 	bool makeRoom(int x, int y, Direction dir, bool firstRoom = false){
 		const int minRoomSize = 3;
@@ -275,9 +392,13 @@ public class LevelGeneratorDefaultScript : MonoBehaviour {
 		wall = Resources.Load("Prefabs/Environment/Wall") as GameObject;
 		door = Resources.Load("Prefabs/Environment/Door") as GameObject;
 		unused = Resources.Load("Prefabs/Environment/Unused") as GameObject;
-
-		//Dungeon(80, 80)
-		//generate(50);
+		levelControllerScript = GameObject.Find ("LevelController").GetComponent<LevelControllerScript> ();
+		int myX = levelControllerScript.GetMapCols ();
+		int myY = levelControllerScript.GetMapRows ();
+	
+		Dungeon (myX, myY);
+		generate(500);
+		print ();
 	}
 	
 	// Update is called once per frame
