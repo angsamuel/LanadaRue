@@ -1,13 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Linq;
-using System.Diagnostics;
+//using System.Diagnostics;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Diagnostics;
-
-
 
 
 public class DungeonGeneratorScript : MonoBehaviour {
@@ -25,8 +21,8 @@ public class DungeonGeneratorScript : MonoBehaviour {
 	int _objects;
 	public const int ChanceRoom = 75;
 
-	//our map
-	private GameObject [,] _levelGrid;
+    //our map
+    private GameObject[,] _levelGrid;
 
 	//keep an eye out here
 	//readonly IRandomize _rnd;
@@ -39,21 +35,37 @@ public class DungeonGeneratorScript : MonoBehaviour {
 		public class PointI{
 			public int X;
 			public int Y;
-		}
+            public Direction direction;
+            public GameObject pointTile;
+        }
+
 
 	//tiles
-	GameObject corridorTile; 
-
-	// Use this for initialization
-	void Start () {
+	GameObject corridorTile;
+    GameObject floorTile;
+    GameObject wallTile;
+    GameObject doorTile;
+    GameObject unusedTile;
+    GameObject woodWallTile;
+    // Use this for initialization
+    void Start () {
 		levelControllerScript = GameObject.Find ("LevelController").GetComponent<LevelControllerScript> ();
 		ymax = levelControllerScript.GetMapCols ();
 		xmax = levelControllerScript.GetMapRows ();
 		_levelGrid = levelControllerScript.GetLevelGrid ();
 
 		corridorTile = Resources.Load ("Prefabs/Environment/Tile") as GameObject;
+        floorTile = Resources.Load("Prefabs/Environment/Tile") as GameObject;
+        wallTile = Resources.Load("Prefabs/Environment/Wall") as GameObject;
+        doorTile = Resources.Load("Prefabs/Environment/Door") as GameObject;
+        unusedTile = Resources.Load("Prefabs/Environment/Unused") as GameObject;
+        woodWallTile = Resources.Load("Prefabs/Environment/WoodWall") as GameObject;
+        //GameObject sut = Instantiate(unusedTile, new Vector3(0, 0, -1), Quaternion.identity) as GameObject;
+        //levelControllerScript.ReplaceTile(0, 0, unusedTile);
 
-	}
+        CreateDungeon(xmax, ymax, 100);
+        //Initialize();
+    }
 
 	// Update is called once per frame
 	void Update () {
@@ -93,37 +105,44 @@ public class DungeonGeneratorScript : MonoBehaviour {
 		public static int GetFeatureUpperBound(int c, int len)
 		{return c + (len + 1) / 2;}
 
-	public static IEnumerable<PointI> GetRoomPoints(int x, int y, int xlen, int ylen, Direction d)
+	public List<PointI> GetRoomPoints(int x, int y, int xlen, int ylen, Direction d)
 	{
 		// north and south share the same x strategy
 		// east and west share the same y strategy
 		Func<int, int, int> a = GetFeatureLowerBound;
 		Func<int, int, int> b = GetFeatureUpperBound;
-
-		switch (d)
-		{
-		case Direction.NORTH:
-			for (var xt = a(x, xlen); xt < b(x, xlen); xt++) for (var yt = y; yt > y - ylen; yt--) yield return new PointI { X = xt, Y = yt };
-			break;
-		case Direction.EAST:
-			for (var xt = x; xt < x + xlen; xt++) for (var yt = a(y, ylen); yt < b(y, ylen); yt++) yield return new PointI { X = xt, Y = yt };
-			break;
-		case Direction.SOUTH:
-			for (var xt = a(x, xlen); xt < b(x, xlen); xt++) for (var yt = y; yt < y + ylen; yt++) yield return new PointI { X = xt, Y = yt };
-			break;
-		case Direction.WEST:
-			for (var xt = x; xt > x - xlen; xt--) for (var yt = a(y, ylen); yt < b(y, ylen); yt++) yield return new PointI { X = xt, Y = yt };
-			break;
-		default:
-			yield break;
-		}
+        List<PointI> output = new List<PointI>();
+        
+        switch (d)
+        {
+            case Direction.NORTH:
+                for (var xt = a(x, xlen); xt < b(x, xlen); xt++) for (var yt = y; yt > y - ylen; yt--) output.Add(new PointI { X = xt, Y = yt });
+                // Debug.Log("we north");
+                break;
+            case Direction.EAST:
+                for (var xt = x; xt < x + xlen; xt++) for (var yt = a(y, ylen); yt < b(y, ylen); yt++) output.Add(new PointI { X = xt, Y = yt });
+                // Debug.Log("we east");
+                break;
+            case Direction.SOUTH:
+                for (var xt = a(x, xlen); xt < b(x, xlen); xt++) for (var yt = y; yt < y + ylen; yt++) output.Add(new PointI { X = xt, Y = yt });
+                //  Debug.Log("we south");
+                break;
+            case Direction.WEST:
+                for (var xt = x; xt > x - xlen; xt--) for (var yt = a(y, ylen); yt < b(y, ylen); yt++) output.Add(new PointI { X = xt, Y = yt });
+                // Debug.Log("we west");
+                break;
+            default:
+                break;
+        }
+        
+        return output;
 	}
 
 	public GameObject GetCellType(int x, int y)
 	{
 		try
 		{
-			return this._levelGrid[x , this._xsize * y];
+			return this._levelGrid[x , y];
 		}
 		catch (IndexOutOfRangeException)
 		{
@@ -158,7 +177,7 @@ public class DungeonGeneratorScript : MonoBehaviour {
 			for (ytemp = y; ytemp > (y - len); ytemp--)
 			{
 				if (ytemp < 0 || ytemp > this._ysize) return false; // oh boho, it was!
-				if (GetCellType(xtemp, ytemp) != null) return false;
+				if (GetCellType(xtemp, ytemp) != unusedTile) return false;
 			}
 
 			// if we're still here, let's start building
@@ -178,7 +197,7 @@ public class DungeonGeneratorScript : MonoBehaviour {
 			for (xtemp = x; xtemp < (x + len); xtemp++)
 			{
 				if (xtemp < 0 || xtemp > this._xsize) return false;
-				if (GetCellType(xtemp, ytemp) != null) return false;
+				if (GetCellType(xtemp, ytemp) != unusedTile) return false;
 			}
 
 			Corridors++;
@@ -197,7 +216,7 @@ public class DungeonGeneratorScript : MonoBehaviour {
 			for (ytemp = y; ytemp < (y + len); ytemp++)
 			{
 				if (ytemp < 0 || ytemp > this._ysize) return false;
-				if (GetCellType(xtemp, ytemp) != null) return false;
+				if (GetCellType(xtemp, ytemp) != unusedTile) return false;
 			}
 
 			Corridors++;
@@ -215,7 +234,7 @@ public class DungeonGeneratorScript : MonoBehaviour {
 			for (xtemp = x; xtemp > (x - len); xtemp--)
 			{
 				if (xtemp < 0 || xtemp > this._xsize) return false;
-				if (GetCellType(xtemp, ytemp) != null) return false;
+				if (GetCellType(xtemp, ytemp) != unusedTile) return false;
 			}
 
 			Corridors++;
@@ -229,10 +248,326 @@ public class DungeonGeneratorScript : MonoBehaviour {
 		// woot, we're still here! let's tell the other guys we're done!!
 		return true;
 	}
-		
-	public void SetCell(int x, int y, GameObject newTile){
+
+    public List<PointI> GetSurroundingPoints(PointI v)
+    {
+        List<string> mylist = new List<string> { "element1", "element2", "element3" };
+        PointI n = new PointI { X = v.X, Y = v.Y + 1, direction = Direction.NORTH };
+        PointI e = new PointI { X = v.X - 1, Y = v.Y, direction = Direction.EAST };
+        PointI s = new PointI { X = v.X, Y = v.Y - 1, direction = Direction.SOUTH };
+        PointI w = new PointI { X = v.X + 1, Y = v.Y, direction = Direction.WEST };
+
+        List<PointI> points = new List<PointI> { n, e, s, w };
+        List<PointI> output = new List<PointI>();
+        foreach(PointI p in points)
+        {
+            if(InBounds(p))
+            {
+                output.Add(p);
+            }
+        }
+        return output;
+
+    }
+    /*
+    public IEnumerable<Tuple<PointI, Direction, Tile>> GetSurroundings(PointI v)
+    {
+        return
+            this.GetSurroundingPoints(v)
+                .Select(r => Tuple.Create(r.Item1, r.Item2, this.GetCellType(r.Item1.X, r.Item1.Y)));
+    }*/
+    public List<PointI> GetSurroundings(PointI v){
+        List<PointI> firstList = GetSurroundingPoints(v);
+        List<PointI> output = new List<PointI>();
+        foreach (PointI p in firstList)
+        {
+            GameObject ti = GetCellType(p.X, p.Y);
+            p.pointTile = ti;
+            output.Add(p);
+        }
+        
+        return output;   
+    }
+
+
+    public bool InBounds(int x, int y)
+    {
+        return x > 0 && x < this.xmax && y > 0 && y < this.ymax;
+    }
+
+    public bool InBounds(PointI v)
+    {
+        return this.InBounds(v.X, v.Y);
+    }
+
+    public bool MakeRoom(int x, int y, int xlength, int ylength, Direction direction)
+    {
+        // define the dimensions of the room, it should be at least 4x4 tiles (2x2 for walking on, the rest is walls)
+        int xlen = this.GetRand(4, xlength);
+        int ylen = this.GetRand(4, ylength);
+
+        // the tile type it's going to be filled with
+        GameObject Floor = floorTile;
+
+        GameObject Wall = wallTile;
+        // choose the way it's pointing at
+        //splunk1
+        List<PointI> points = GetRoomPoints(x, y, xlen, ylen, direction);
+        Debug.Log("points size: " + points.Count);
+        // Check if there's enough space left for it
+       /* if (
+            points.Any(
+                s =>
+                s.Y < 0 || s.Y > this._ysize || s.X < 0 || s.X > this._xsize || this.GetCellType(s.X, s.Y) != unusedTile)) return false;
+       */
+        //logger went here
+
+        foreach (var p in points)
+        {
+            Debug.Log("making dat room");
+            this.SetCell(p.X, p.Y, IsWall(x, y, xlen, ylen, p.X, p.Y, direction) ? Wall : Floor);
+        }
+
+        // yay, all done
+        return true;
+    }
+
+    public GameObject[,] GetLevelGrid()
+    {
+        return this._levelGrid;
+    }
+
+    public void ShowDungeon()
+    {
+        for (int y = 0; y < this._ysize; y++)
+        {
+            for (int x = 0; x < this._xsize; x++)
+            {
+                // Console.Write(GetCellTile(x, y));
+                levelControllerScript.ReplaceTile(x, y, GetCellType(x,y));
+            }
+            //bandaid
+            //if (this._xsize <= xmax) { levelControllerScript.ReplaceTile(x, y, wallTile); }
+        }
+    }
+    public Direction RandomDirection()
+    {
+        int dir = this.GetRand(0, 4);
+        switch (dir)
+        {
+            case 0:
+                return Direction.NORTH;
+            case 1:
+                return Direction.EAST;
+            case 2:
+                return Direction.SOUTH;
+            case 3:
+                return Direction.WEST;
+            default:
+                throw new InvalidOperationException();
+        }
+    }
+
+    public bool CreateDungeon(int inx, int iny, int inobj)
+    {
+        this._objects = inobj < 1 ? 10 : inobj;
+
+        // adjust the size of the map, if it's smaller or bigger than the limits
+        if (inx < 3) this._xsize = 3;
+        else if (inx > xmax) this._xsize = xmax;
+        else this._xsize = inx;
+
+        if (iny < 3) this._ysize = 3;
+        else if (iny > ymax) this._ysize = ymax;
+        else this._ysize = iny;
+
+        //Console.WriteLine(MsgXSize + this._xsize);
+        //Console.WriteLine(MsgYSize + this._ysize);
+        //Console.WriteLine(MsgMaxObjects + this._objects);
+
+        // redefine the map var, so it's adjusted to our new map size
+        //this._dungeonMap = new Tile[this._xsize * this._ysize];
+        this._levelGrid = new GameObject[levelControllerScript.GetMapCols(), levelControllerScript.GetMapRows()];
+
+        // start with making the "standard stuff" on the map
+        this.Initialize();
+
+        /*******************************************************************************
+        And now the code of the random-map-generation-algorithm begins!
+        *******************************************************************************/
+
+        // start with making a room in the middle, which we can start building upon
+        this.MakeRoom(this._xsize / 2, this._ysize / 2, 8, 6, RandomDirection()); // getrand saken f????r att slumpa fram riktning p?? rummet
+
+        // keep count of the number of "objects" we've made
+        int currentFeatures = 1; // +1 for the first room we just made
+
+        // then we sart the main loop
+        for (int countingTries = 0; countingTries < 1000; countingTries++)
+        {
+            //Debug.Log("try counted"); --we made it here
+
+            // check if we've reached our quota
+            if (currentFeatures == this._objects)
+            {
+                break;
+            }
+
+            // start with a random wall
+            int newx = 0;
+            int xmod = 0;
+            int newy = 0;
+            int ymod = 0;
+            Direction? validTile = null;
+
+            // 1000 chances to find a suitable object (room or corridor)..
+            for (int testing = 0; testing < 1000; testing++)
+            {
+                //Debug.Log("testing counted"); -made it here
+                newx = this.GetRand(1, this._xsize - 1);
+                newy = this.GetRand(1, this._ysize - 1);
+
+                //HERE WE ARE
+
+                if (GetCellType(newx, newy) == wallTile || GetCellType(newx, newy) == corridorTile)
+                {
+                    Debug.Log("wall or corr"); //!!!
+                    var surroundings = this.GetSurroundings(new PointI() { X = newx, Y = newy });
+
+                    // check if we can reach the place
+                    //var canReach = surroundings.FirstOrDefault(s => s.Item3 == Tile.Corridor || s.Item3 == Tile.DirtFloor);
+
+                    PointI canReach = new PointI { };
+                    foreach(PointI p in surroundings)
+                    {
+                        if(p.pointTile == corridorTile || p.pointTile == floorTile)
+                        {
+                            canReach = p;
+                            break;
+                        }
+                    }
+                    if (canReach == null)
+                    {
+                        continue;
+                    }
+                    validTile = canReach.direction;
+
+                        switch (canReach.direction)
+                    {
+                        case Direction.NORTH:
+                            xmod = 0;
+                            ymod = -1;
+                            break;
+                        case Direction.EAST:
+                            xmod = 1;
+                            ymod = 0;
+                            break;
+                        case Direction.SOUTH:
+                            xmod = 0;
+                            ymod = 1;
+                            break;
+                        case Direction.WEST:
+                            xmod = -1;
+                            ymod = 0;
+                            break;
+                        default:
+                            throw new InvalidOperationException();
+                    }
+
+
+                    // check that we haven't got another door nearby, so we won't get alot of openings besides
+                    // each other
+
+                    if (GetCellType(newx, newy + 1) == doorTile) // north
+                    {
+                        validTile = null;
+
+                    }
+
+                    else if (GetCellType(newx - 1, newy) == doorTile) // east
+                        validTile = null;
+                    else if (GetCellType(newx, newy - 1) == doorTile) // south
+                        validTile = null;
+                    else if (GetCellType(newx + 1, newy) == doorTile) // west
+                        validTile = null;
+
+
+                    // if we can, jump out of the loop and continue with the rest
+                    if (validTile.HasValue) break;
+                }
+            }
+
+            if (validTile.HasValue)
+            {
+                Debug.Log("has value");
+                // choose what to build now at our newly found place, and at what direction
+                int feature = this.GetRand(0, 100);
+                if (feature <= ChanceRoom)
+                { // a new room
+                    Debug.Log("new room!");
+                    if (this.MakeRoom(newx + xmod, newy + ymod, 8, 6, validTile.Value))
+                    {
+                        currentFeatures++; // add to our quota
+
+                        // then we mark the wall opening with a door
+                        this.SetCell(newx, newy, doorTile);
+
+                        // clean up infront of the door so we can reach it
+                        this.SetCell(newx + xmod, newy + ymod, floorTile);
+                    }
+                }
+                else if (feature >= ChanceRoom)
+                { // new corridor
+                    if (this.MakeCorridor(newx + xmod, newy + ymod, 6, validTile.Value))
+                    {
+                        // same thing here, add to the quota and a door
+                        currentFeatures++;
+
+                        this.SetCell(newx, newy, doorTile);
+                    }
+                }
+            }
+        }
+
+        /*******************************************************************************
+        All done with the building, let's finish this one off
+        *******************************************************************************/
+        //AddSprinkles();
+
+        // all done with the map generation, tell the user about it and finish
+        // Console.WriteLine(MsgNumObjects + currentFeatures);
+
+        return true;
+    }
+
+    //WORKING
+    void Initialize()
+    {
+        UnityEngine.Debug.Log("initialization called");
+        for (int y = 0; y < this._ysize; y++)
+        {
+            for (int x = 0; x < this._xsize; x++)
+            {
+                // ie, making the borders of unwalkable walls
+                if (y == 0 || y == this._ysize - 1 || x == 0 || x == this._xsize - 1)
+                {
+                    //Debug.Log("calling SetCell()");
+                    this.SetCell(x, y, woodWallTile);
+                }
+                else
+                {                        // and fill the rest with dirt
+                    //Debug.Log("calling SetCell()");
+                    this.SetCell(x, y, unusedTile);
+                }
+            }
+        }
+    }
+
+    public void SetCell(int x, int y, GameObject newTile){
+        //Debug.Log("Replacing tile...");
 		levelControllerScript.ReplaceTile (x, y, newTile);
 	}
+
 
 
 }

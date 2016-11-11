@@ -9,6 +9,8 @@ public class LevelControllerScript : MonoBehaviour {
 	GameObject wall;
 	GameObject playerCharacter;
 
+    GameObject dumbGen;
+
     List<GameObject> itemPool = new List<GameObject>();
 
 	SlumsLevelGeneratorScript slumsLevelGeneratorScript;
@@ -40,9 +42,11 @@ public class LevelControllerScript : MonoBehaviour {
 		SpawnTiles();
 		SpawnPlayerCharacter ();
 		GameObject slumsGeneratorPref = Resources.Load ("Prefabs/LevelGenerators/SlumsLevelGenerator") as GameObject;
-		GameObject slumsGenerator = Instantiate(slumsGeneratorPref, CoordToVector3(0, 0, 0), Quaternion.identity) as GameObject;
-		slumsLevelGeneratorScript = slumsGenerator.GetComponent<SlumsLevelGeneratorScript> ();
-	}
+        dumbGen = Resources.Load("Prefabs/LevelGenerators/DungeonGenerator") as GameObject;
+        GameObject myDumbGen = Instantiate(dumbGen, new Vector3(0,0,0), Quaternion.identity) as GameObject;
+        //GameObject slumsGenerator = Instantiate(slumsGeneratorPref, CoordToVector3(0, 0, 0), Quaternion.identity) as GameObject;
+        //slumsLevelGeneratorScript = slumsGenerator.GetComponent<SlumsLevelGeneratorScript> ();
+    }
 
 	private void SpawnTiles(){
 		for (int r = 0; r < mapRows; r++) {
@@ -69,6 +73,7 @@ public class LevelControllerScript : MonoBehaviour {
 		}
 		levelGrid [x, y] = Instantiate (newTile, CoordToVector3(x,y, 0), Quaternion.identity) as GameObject;
 	}
+
     public void SpawnItem(int x, int y, GameObject newItem)
     {
         Debug.Log("SpawneItem called");
