@@ -9,6 +9,9 @@ public class LevelGeneratorDefaultScript : MonoBehaviour {
 	public GameObject door;
 	public GameObject corridor;
 
+	private int _roomChance = 50;
+	private int _maxFeatures = 500;
+
 	int _width, _height;
 	List<Tile> _tiles;
 	List<Rect> _rooms;
@@ -171,7 +174,7 @@ public class LevelGeneratorDefaultScript : MonoBehaviour {
 	}
 
 	bool createFeature(int x, int y, Direction dir){
-		int roomChance = 50; //corridorChance = 100 - roomChance
+		int roomChance = _roomChance; //corridorChance = 100 - roomChance
 		int dx = 0;
 		int dy = 0;
 
@@ -228,7 +231,7 @@ public class LevelGeneratorDefaultScript : MonoBehaviour {
 			room.y = y - room.height / 2;
 		}
 
-		if(placeRect(ref room, Tile.Floor)){
+		if(placeRect(ref room, Tile.Floor, true)){
 			_rooms.Add(room);
 			if(dir != Direction.South || firstRoom){
 				Rect r = new Rect {};
@@ -306,7 +309,7 @@ public class LevelGeneratorDefaultScript : MonoBehaviour {
 			}
 
 		}
-		if (placeRect (ref corridor, Tile.Corridor)) {
+		if (placeRect (ref corridor, Tile.Corridor, true)) {
 			if (dir != Direction.South && corridor.width != 1) {
 				Rect r = new Rect { };
 				r.x = corridor.x;
@@ -344,7 +347,8 @@ public class LevelGeneratorDefaultScript : MonoBehaviour {
 		return false;
 	}
 
-	bool placeRect(ref Rect rect, Tile tile){
+	//add bool to this to remove walls from corridors
+	bool placeRect(ref Rect rect, Tile tile, bool needsWall){
 		if (rect.x < 1 || rect.y < 1 || rect.x + rect.width > _width - 1 || rect.y + rect.height > _height - 1) {
 			return false;
 		}
@@ -358,7 +362,7 @@ public class LevelGeneratorDefaultScript : MonoBehaviour {
 		for (int y = rect.y - 1; y < rect.y + rect.height + 1; ++y) {
 			for (int x = rect.x - 1; x < rect.x + rect.width + 1; ++x) {
 				if (x == rect.x - 1 || y == rect.y - 1 || x == rect.x + rect.width || y == rect.y + rect.height) {
-					setTile (x, y, Tile.Wall);
+					if(needsWall){ setTile(x, y, Tile.Wall);}
 				} else {
 					setTile (x, y, tile);
 				}
@@ -397,12 +401,11 @@ public class LevelGeneratorDefaultScript : MonoBehaviour {
 		int myY = levelControllerScript.GetMapRows ();
 	
 		Dungeon (myX, myY);
-		generate(500);
+		generate(_maxFeatures);
 		print ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
 	}
 }
