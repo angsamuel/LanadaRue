@@ -155,6 +155,7 @@ public class LevelGeneratorDefaultScript : MonoBehaviour {
 		//Debug.Log (_tiles.Count);
 		return _tiles [x + y * _width];
 	}
+		
 
 	void setTile(int x, int y, Tile tile){
 		_tiles [x + y * _width] = tile;
@@ -412,24 +413,27 @@ public class LevelGeneratorDefaultScript : MonoBehaviour {
 	
 		Dungeon (myX, myY);
 		generate(_maxFeatures);
+		OutlineMap ();
+
 		print ();
-        fixWalls();
+	}
+	void OutlineMap(){
+		for (int y = 0; y < _height; ++y) {
+			for (int x = 0; x < _width; ++x) {
+				if (y == 0 || y==_height-1) {
+					if (getTile (x, y) == Tile.Unused) {
+						setTile (x,y,Tile.Corridor);
+					}
+				}
+				if (x == 0 || x==_width-1) {
+					if (getTile (x, y) == Tile.Unused) {
+						setTile (x,y,Tile.Corridor);
+					}
+				}
+			}
+		}
 	}
 
-    void fixWalls()
-    {
-        for(int x = 0; x < myX; ++x)
-        {
-            for(int y = 0; y < myY; ++y)
-            {
-                var wp = levelControllerScript.GetLevelGrid()[x, y];
-                if (wp.GetType() == wall.GetType()){
-                   
-                }
-            }
-        }
-
-    }
 	
 	// Update is called once per frame
 	void Update () {

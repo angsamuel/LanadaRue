@@ -6,6 +6,8 @@ public class LivingThingScript : MonoBehaviour {
 	private string gender;
     int posX;
     int posY;
+	int mapCols;
+	int mapRows;
 
     private LevelControllerScript levelControllerScript;
     private GameObject[,] levelGrid;
@@ -15,6 +17,8 @@ public class LivingThingScript : MonoBehaviour {
         levelControllerScript = GameObject.Find("LevelController").GetComponent<LevelControllerScript>();
         levelGrid = levelControllerScript.GetLevelGrid();
         Debug.Log(levelGrid.Length);
+		mapCols = levelControllerScript.GetMapCols();
+		mapRows = levelControllerScript.GetMapRows ();
     }
 	
 	// Update is called once per frame
@@ -23,8 +27,9 @@ public class LivingThingScript : MonoBehaviour {
 	}
     protected void Move(int x, int y)
     {
+
 		levelGrid = levelControllerScript.GetLevelGrid();
-		if (levelGrid [posX + x, posY + y] != null) {
+		if (posX + x >= 0 && posX + x <= mapCols && posY + y >= 0 && posY + y <= mapRows && levelGrid [posX + x, posY + y] != null) {
 			if (levelGrid [posX + x, posY + y].GetComponent<TileScript> ().IsPassable ()) {
 				levelGrid [posX, posY].GetComponent<TileScript> ().RemoveOccupant ();
 				posX += x;

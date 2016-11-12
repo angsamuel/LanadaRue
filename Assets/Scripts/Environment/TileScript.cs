@@ -6,6 +6,9 @@ public class TileScript : MonoBehaviour {
 	protected bool passable;
 	protected Sprite mySprite;
 
+	public float minRandScale =  0.0f;
+	public float maxRandScale = 0.0f;
+
 	public string id;
 
     protected bool occupied = false;
@@ -14,6 +17,10 @@ public class TileScript : MonoBehaviour {
 	protected void Start(){
 		mySprite = GetComponent<Sprite> ();
 		passable = true;
+
+		//for aesthetic
+		float ran = Random.Range (minRandScale, maxRandScale);
+		transform.localScale += new Vector3(ran, ran, 0);
 	}
 	public bool IsPassable(){
 		if (occupied) {

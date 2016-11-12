@@ -80,8 +80,8 @@ public class CameraScript : MonoBehaviour {
 
         //clamps camera position so we don't go off the board 
         Vector3 v3 = transform.position;
-        v3.x = Mathf.Clamp(v3.x, -(mapCols / 2) + camWidth / 2, (mapCols / 2) - camWidth / 2);
-        v3.y = Mathf.Clamp(v3.y, -(mapRows / 2) + camHeight / 2, (mapRows / 2) - camHeight / 2);
+        v3.x = Mathf.Clamp(v3.x, - (mapCols / 2) + camWidth / 2 , (mapCols / 2) - camWidth / 2 );
+        v3.y = Mathf.Clamp(v3.y, - (mapRows / 2) + camHeight / 2 , (mapRows / 2) - camHeight / 2 );
         transform.position = v3;
 
         //camera zooming
