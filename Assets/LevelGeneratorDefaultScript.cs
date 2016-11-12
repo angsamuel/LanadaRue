@@ -9,7 +9,7 @@ public class LevelGeneratorDefaultScript : MonoBehaviour {
 	public GameObject door;
 	public GameObject corridor;
 
-	private int _roomChance = 50;
+	private int _roomChance = 30;
 	private int _maxFeatures = 500;
 
 	int _width, _height;
