@@ -17,7 +17,7 @@ public class LevelGeneratorDefaultScript : MonoBehaviour {
     public Sprite botLeftCorner;
 
 	private int _roomChance = 30;
-	private int _maxFeatures = 500;
+	private int _maxFeatures = 1000;
 
     int myX;
     int myY;
@@ -143,7 +143,6 @@ public class LevelGeneratorDefaultScript : MonoBehaviour {
 					levelControllerScript.ReplaceTile (x, y, unused);
 					break;
 				}
-
 			}
 		}
 	}
@@ -320,7 +319,7 @@ public class LevelGeneratorDefaultScript : MonoBehaviour {
 			}
 
 		}
-		if (placeRect (ref corridor, Tile.Corridor, true)) {
+		if (placeRect (ref corridor, Tile.Corridor, false)) {
 			if (dir != Direction.South && corridor.width != 1) {
 				Rect r = new Rect { };
 				r.x = corridor.x;

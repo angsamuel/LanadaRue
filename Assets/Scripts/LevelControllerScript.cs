@@ -97,5 +97,7 @@ public class LevelControllerScript : MonoBehaviour {
     {
         return itemPool;
     }
-		
+	public void ReplaceTileSprite(int x, int y, Sprite newSprite){
+		levelGrid [x, y].GetComponent<SpriteRenderer> ().sprite = newSprite;
+	}
 }
