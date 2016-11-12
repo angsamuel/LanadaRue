@@ -9,10 +9,21 @@ public class LevelGeneratorDefaultScript : MonoBehaviour {
 	public GameObject door;
 	public GameObject corridor;
 
+    public Sprite verWall;
+    public Sprite horzWall;
+    public Sprite topRightCorner;
+    public Sprite topLeftCorner;
+    public Sprite botRightCorner;
+    public Sprite botLeftCorner;
+
 	private int _roomChance = 30;
 	private int _maxFeatures = 500;
 
-	int _width, _height;
+    int myX;
+    int myY;
+
+
+    int _width, _height;
 	List<Tile> _tiles;
 	List<Rect> _rooms;
 	List<Rect> _exits;
@@ -397,13 +408,29 @@ public class LevelGeneratorDefaultScript : MonoBehaviour {
 		door = Resources.Load("Prefabs/Environment/Door") as GameObject;
 		unused = Resources.Load("Prefabs/Environment/Unused") as GameObject;
 		levelControllerScript = GameObject.Find ("LevelController").GetComponent<LevelControllerScript> ();
-		int myX = levelControllerScript.GetMapCols ();
-		int myY = levelControllerScript.GetMapRows ();
+		myX = levelControllerScript.GetMapCols ();
+		myY = levelControllerScript.GetMapRows ();
 	
 		Dungeon (myX, myY);
 		generate(_maxFeatures);
 		print ();
+        fixWalls();
 	}
+
+    void fixWalls()
+    {
+        for(int x = 0; x < myX; ++x)
+        {
+            for(int y = 0; y < myY; ++y)
+            {
+                var wp = levelControllerScript.GetLevelGrid()[x, y];
+                if (wp.GetType() == wall.GetType()){
+                   
+                }
+            }
+        }
+
+    }
 	
 	// Update is called once per frame
 	void Update () {
