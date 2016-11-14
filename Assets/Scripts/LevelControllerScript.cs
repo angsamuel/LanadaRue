@@ -41,7 +41,8 @@ public class LevelControllerScript : MonoBehaviour {
 		if (mapCols % 2 == 0) {oddColAdjustment = -.5f;}
 		if (mapRows % 2 == 0) {oddRowAdjustment = -.5f;}
 		SpawnTiles();
-		SpawnPlayerCharacter ();
+
+		SpawnPlayerCharacter (mapCols/2,mapRows/2);
 		GameObject slumsGeneratorPref = Resources.Load ("Prefabs/LevelGenerators/SlumsLevelGenerator") as GameObject;
         dumbGen = Resources.Load("Prefabs/LevelGenerators/DungeonGenerator") as GameObject;
         //GameObject myDumbGen = Instantiate(dumbGen, new Vector3(0,0,0), Quaternion.identity) as GameObject;
@@ -64,9 +65,9 @@ public class LevelControllerScript : MonoBehaviour {
 	}
 		
     //fix this
-	private void SpawnPlayerCharacter(){
-		GameObject spawnPlayerCharacter = Instantiate (playerCharacter, new Vector3 (.5f, .5f, -1), Quaternion.identity) as GameObject;
-        spawnPlayerCharacter.GetComponent<PlayerCharacterScript>().SetPosVariables(mapCols/2, mapRows/2);
+	private void SpawnPlayerCharacter(int x, int y){
+		GameObject spawnPlayerCharacter = Instantiate (playerCharacter, CoordToVector3(x,y,-1), Quaternion.identity) as GameObject;
+        spawnPlayerCharacter.GetComponent<PlayerCharacterScript>().SetPosVariables(x, y);
         
 	}
 	//replaces tile in level grid
