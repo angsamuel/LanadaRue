@@ -180,12 +180,9 @@ public class LevelGeneratorDefaultScript : MonoBehaviour {
 					_exits.RemoveAt (r);
 					return true;
 				}
-
 			}
-
 		}
 		return false;
-
 	}
 
 	bool createFeature(int x, int y, Direction dir){

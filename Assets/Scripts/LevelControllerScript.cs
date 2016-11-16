@@ -36,6 +36,8 @@ public class LevelControllerScript : MonoBehaviour {
 	void Start () {
 		//create levelGrid
 		levelGrid = new GameObject [mapCols,mapRows];
+
+		//load prefabs
 		unusedTile = Resources.Load ("Prefabs/Environment/Unused") as GameObject;
 		wall = Resources.Load ("Prefabs/Environment/Wall") as GameObject;
 		playerCharacter = Resources.Load ("Prefabs/PlayerCharacter") as GameObject;
@@ -44,18 +46,12 @@ public class LevelControllerScript : MonoBehaviour {
 		SpawnTiles();
 
 		SpawnPlayerCharacter (mapCols/2,mapRows/2);
+
 		GameObject slumsGeneratorPref = Resources.Load ("Prefabs/LevelGenerators/SlumsLevelGenerator") as GameObject;
         dumbGen = Resources.Load("Prefabs/LevelGenerators/DungeonGenerator") as GameObject;
 		levelGenerator = Resources.Load("Prefabs/LevelGenerators/LevelGeneratorDefault") as GameObject;
 		GameObject lg = Instantiate (levelGenerator, new Vector3 (0, 0, 0), Quaternion.identity) as GameObject;
 		LevelGeneratorDefaultScript lgScript = lg.GetComponent<LevelGeneratorDefaultScript>();
-		//save 
-		//string levelToJson = JsonUtility.ToJson(lgScript);
-		//Debug.Log ("levelToJson is " + levelToJson);
-
-		//string lgJson = JsonUtility.ToJson (lg.GetComponent<LevelGeneratorDefaultScript>());
-
-		//JsonData levelJson;
 
 	}
 
