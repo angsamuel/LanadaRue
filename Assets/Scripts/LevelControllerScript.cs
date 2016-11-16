@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
+using System.IO;
+using LitJson;
 
 public class LevelControllerScript : MonoBehaviour {
 	//controls the generation and control of individual levels
@@ -9,9 +12,7 @@ public class LevelControllerScript : MonoBehaviour {
 	GameObject wall;
 	GameObject playerCharacter;
 	GameObject levelGenerator;
-
     GameObject dumbGen;
-
     List<GameObject> itemPool = new List<GameObject>();
 
 	SlumsLevelGeneratorScript slumsLevelGeneratorScript;
@@ -45,19 +46,21 @@ public class LevelControllerScript : MonoBehaviour {
 		SpawnPlayerCharacter (mapCols/2,mapRows/2);
 		GameObject slumsGeneratorPref = Resources.Load ("Prefabs/LevelGenerators/SlumsLevelGenerator") as GameObject;
         dumbGen = Resources.Load("Prefabs/LevelGenerators/DungeonGenerator") as GameObject;
-        //GameObject myDumbGen = Instantiate(dumbGen, new Vector3(0,0,0), Quaternion.identity) as GameObject;
-        //GameObject slumsGenerator = Instantiate(slumsGeneratorPref, CoordToVector3(0, 0, 0), Quaternion.identity) as GameObject;
-        //slumsLevelGeneratorScript = slumsGenerator.GetComponent<SlumsLevelGeneratorScript> ();
 		levelGenerator = Resources.Load("Prefabs/LevelGenerators/LevelGeneratorDefault") as GameObject;
 		GameObject lg = Instantiate (levelGenerator, new Vector3 (0, 0, 0), Quaternion.identity) as GameObject;
-    }
+		LevelGeneratorDefaultScript lgScript = lg.GetComponent<LevelGeneratorDefaultScript>();
+		//save 
+		//string levelToJson = JsonUtility.ToJson(lgScript);
+		//Debug.Log ("levelToJson is " + levelToJson);
+
+		//string lgJson = JsonUtility.ToJson (lg.GetComponent<LevelGeneratorDefaultScript>());
+
+		//JsonData levelJson;
+
+	}
 
 	private void SpawnTiles(){
-		for (int r = 0; r < mapRows; r++) {
-			for (int c = 0; c < mapCols; c++) {
-				//ReplaceTile (c, r, unusedTile);
-            }
-		}
+		//prep work
 	}
 	//converts coordinate in grid to location in scene
 	public Vector3 CoordToVector3(int x ,int y, int z){

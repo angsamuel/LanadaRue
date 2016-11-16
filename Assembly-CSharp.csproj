@@ -45,19 +45,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\CameraScript.cs" />
-     <Compile Include="Assets\DragMap.cs" />
-     <Compile Include="Assets\DungeonGeneratorScript.cs" />
-     <Compile Include="Assets\ItemScript.cs" />
-     <Compile Include="Assets\LevelGeneratorDefaultScript.cs" />
+     <Compile Include="Assets\Scripts\CameraScript.cs" />
+     <Compile Include="Assets\Scripts\DragMap.cs" />
+     <Compile Include="Assets\Scripts\DungeonGeneratorScript.cs" />
      <Compile Include="Assets\Scripts\Environment\TileScript.cs" />
      <Compile Include="Assets\Scripts\Environment\WallScript.cs" />
+     <Compile Include="Assets\Scripts\ItemScript.cs" />
      <Compile Include="Assets\Scripts\LevelControllerScript.cs" />
+     <Compile Include="Assets\Scripts\LevelGeneratorDefaultScript.cs" />
      <Compile Include="Assets\Scripts\LivingThings\Humans\HumanScript.cs" />
      <Compile Include="Assets\Scripts\LivingThings\LivingThingScript.cs" />
      <Compile Include="Assets\Scripts\Player\PlayerCharacterScript.cs" />
      <Compile Include="Assets\Scripts\Player\PlayerInputControllerScript.cs" />
-     <Compile Include="Assets\SlumsLevelGeneratorScript.cs" />
+     <Compile Include="Assets\Scripts\SlumsLevelGeneratorScript.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
@@ -66,6 +66,9 @@
  </Reference>
  <Reference Include="UnityEngine.Analytics">
  <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/UnityAnalytics/UnityEngine.Analytics.dll</HintPath>
+ </Reference>
+ <Reference Include="LitJson">
+ <HintPath>/Users/Brewmaster/Desktop/unity/LanadaRue/Assets/Resources/LitJson.dll</HintPath>
  </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

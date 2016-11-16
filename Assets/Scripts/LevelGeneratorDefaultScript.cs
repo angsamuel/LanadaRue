@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using LitJson;
 
 public class LevelGeneratorDefaultScript : MonoBehaviour {
 	public GameObject unused;
@@ -16,19 +17,22 @@ public class LevelGeneratorDefaultScript : MonoBehaviour {
     public Sprite botRightCorner;
     public Sprite botLeftCorner;
 
-	private int _roomChance = 30;
-	private int _maxFeatures = 1000;
+	public int _roomChance = 30;
+	public int _maxFeatures = 1000;
 
-    int myX;
-    int myY;
+    public int myX;
+    public int myY;
 
-
-    int _width, _height;
-	List<Tile> _tiles;
-	List<Rect> _rooms;
-	List<Rect> _exits;
+    public int _width, _height;
+	public List<Tile> _tiles;
+	public List<Rect> _rooms;
+	public List<Rect> _exits;
 
 	LevelControllerScript levelControllerScript;
+
+	public class TilesForJson{
+		public List<Tile> tilesForJson;
+	}
 
 	int randomInt(int exclusiveMax){
 		return (int)Random.Range (0, exclusiveMax-1); 
@@ -48,7 +52,7 @@ public class LevelGeneratorDefaultScript : MonoBehaviour {
 		public int width, height;
 	};
 
-	enum Tile{
+	public enum Tile{
 		Unused,
 		Floor,
 		Wall,
@@ -56,7 +60,7 @@ public class LevelGeneratorDefaultScript : MonoBehaviour {
 		Corridor
 	};
 
-	enum Direction{
+	public enum Direction{
 		North,
 		South,
 		East,
@@ -147,7 +151,7 @@ public class LevelGeneratorDefaultScript : MonoBehaviour {
 		}
 	}
 
-	Tile getTile(int x, int y){
+	public Tile getTile(int x, int y){
 		if (x < 0 || y < 0 || x >= _width || y >= _height) {
 			return Tile.Unused;
 		}
@@ -157,7 +161,7 @@ public class LevelGeneratorDefaultScript : MonoBehaviour {
 	}
 		
 
-	void setTile(int x, int y, Tile tile){
+	public void setTile(int x, int y, Tile tile){
 		_tiles [x + y * _width] = tile;
 	}
 
@@ -402,20 +406,42 @@ public class LevelGeneratorDefaultScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		//load prefabs
 		corridor = Resources.Load ("Prefabs/Environment/Corridor") as GameObject;
 		floor = Resources.Load("Prefabs/Environment/Floor") as GameObject;
 		wall = Resources.Load("Prefabs/Environment/Wall") as GameObject;
 		door = Resources.Load("Prefabs/Environment/Door") as GameObject;
 		unused = Resources.Load("Prefabs/Environment/Unused") as GameObject;
+
+		//find levelController
 		levelControllerScript = GameObject.Find ("LevelController").GetComponent<LevelControllerScript> ();
+
 		myX = levelControllerScript.GetMapCols ();
 		myY = levelControllerScript.GetMapRows ();
 	
-		Dungeon (myX, myY);
-		generate(_maxFeatures);
-		OutlineMap ();
+		if (!System.IO.File.Exists (Application.dataPath + "/tiles_0_0.json")) {
+			Dungeon (myX, myY);
+			generate (_maxFeatures);
+			OutlineMap ();
+			print ();
+		} else {
+			string fileString = System.IO.File.ReadAllText(Application.dataPath + "/tiles_0_0.json");
+			Dungeon (myX, myY);
 
-		print ();
+			TilesForJson loadedTiles = new TilesForJson ();
+			loadedTiles.tilesForJson = new List<Tile> ();
+			loadedTiles = JsonUtility.FromJson<TilesForJson>(fileString);
+
+			Debug.Log("WOW!");
+			Debug.Log (loadedTiles.tilesForJson.Count);
+			_tiles = loadedTiles.tilesForJson;
+			print ();
+		}
+		TilesForJson tfj = new TilesForJson ();
+		tfj.tilesForJson = _tiles;
+		string levelToJson = JsonUtility.ToJson(tfj);
+		//Debug.Log ("levelToJson is " + levelToJson);
+		System.IO.File.WriteAllText (Application.dataPath + "/tiles_0_0.json",levelToJson);
 	}
 	void OutlineMap(){
 		for (int y = 0; y < _height; ++y) {
