@@ -14,6 +14,7 @@ public class LevelControllerScript : MonoBehaviour {
 	GameObject levelGenerator;
     GameObject dumbGen;
     List<GameObject> itemPool = new List<GameObject>();
+	GameObject camera;
 
 	public LevelGeneratorDefaultScript lgScript;
 
@@ -40,6 +41,7 @@ public class LevelControllerScript : MonoBehaviour {
 	}
 		
 	void Start () {
+		camera = GameObject.Find ("Main Camera");
 		//create levelGrid
 		levelGrid = new GameObject [mapCols,mapRows];
 
@@ -58,7 +60,6 @@ public class LevelControllerScript : MonoBehaviour {
 		levelGenerator = Resources.Load("Prefabs/LevelGenerators/LevelGeneratorDefault") as GameObject;
 		GameObject lg = Instantiate (levelGenerator, new Vector3 (0, 0, 0), Quaternion.identity) as GameObject;
 		 lgScript = lg.GetComponent<LevelGeneratorDefaultScript>();
-
 	}
 
 	private void SpawnTiles(){
