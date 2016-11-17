@@ -4,13 +4,13 @@ using System.Collections;
 public class LivingThingScript : MonoBehaviour {
 	private string name;
 	private string gender;
-    int posX;
-    int posY;
-	int mapCols;
-	int mapRows;
+    protected int posX;
+    protected int posY;
+	protected int mapCols;
+	protected int mapRows;
 
     private LevelControllerScript levelControllerScript;
-    private GameObject[,] levelGrid;
+    protected GameObject[,] levelGrid;
 
     // Use this for initialization
     protected void Start () {
@@ -39,6 +39,17 @@ public class LivingThingScript : MonoBehaviour {
 			}
 		}
 	}
+	public Vector3 CoordToVector3(int x ,int y, int z){
+		return new Vector3 (x - mapCols / 2 + .5f, y - mapRows / 2 + .5f, z);
+	}
+	protected void Teleport(int x, int y){
+		levelGrid [posX, posY].GetComponent<TileScript> ().RemoveOccupant ();
+		posX = x;
+		posY = y;
+		transform.position =  (CoordToVector3(posX, posY, -1));
+		levelGrid [posX, posY].GetComponent<TileScript> ().SetOccupant (GetComponent<GameObject> ());
+	}
+
 
     public void SetPosVariables(int x, int y)
     {

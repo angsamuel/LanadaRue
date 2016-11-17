@@ -15,6 +15,8 @@ public class LevelControllerScript : MonoBehaviour {
     GameObject dumbGen;
     List<GameObject> itemPool = new List<GameObject>();
 
+	public LevelGeneratorDefaultScript lgScript;
+
 	SlumsLevelGeneratorScript slumsLevelGeneratorScript;
 
 	float oddColAdjustment = 0;
@@ -25,6 +27,10 @@ public class LevelControllerScript : MonoBehaviour {
 
 	//grid stores a list at each location, which stores all matrixOccupants
 	private GameObject [,] levelGrid; 
+
+	public LevelGeneratorDefaultScript GetLGScript(){
+		return lgScript;
+	}
 
 	public int GetMapRows(){
 		return mapRows;
@@ -45,13 +51,13 @@ public class LevelControllerScript : MonoBehaviour {
 		if (mapRows % 2 == 0) {oddRowAdjustment = -.5f;}
 		SpawnTiles();
 
-		SpawnPlayerCharacter (mapCols/2,mapRows/2);
+		SpawnPlayerCharacter (mapCols-1,mapRows-1);
 
 		GameObject slumsGeneratorPref = Resources.Load ("Prefabs/LevelGenerators/SlumsLevelGenerator") as GameObject;
         dumbGen = Resources.Load("Prefabs/LevelGenerators/DungeonGenerator") as GameObject;
 		levelGenerator = Resources.Load("Prefabs/LevelGenerators/LevelGeneratorDefault") as GameObject;
 		GameObject lg = Instantiate (levelGenerator, new Vector3 (0, 0, 0), Quaternion.identity) as GameObject;
-		LevelGeneratorDefaultScript lgScript = lg.GetComponent<LevelGeneratorDefaultScript>();
+		 lgScript = lg.GetComponent<LevelGeneratorDefaultScript>();
 
 	}
 

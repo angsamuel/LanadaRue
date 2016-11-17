@@ -30,6 +30,8 @@ public class LevelGeneratorDefaultScript : MonoBehaviour {
 
 	LevelControllerScript levelControllerScript;
 
+
+
 	public class TilesForJson{
 		public List<Tile> tilesForJson;
 	}
@@ -403,7 +405,6 @@ public class LevelGeneratorDefaultScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		
 		//load prefabs
 		corridor = Resources.Load ("Prefabs/Environment/Corridor") as GameObject;
 		floor = Resources.Load("Prefabs/Environment/Floor") as GameObject;
@@ -417,11 +418,10 @@ public class LevelGeneratorDefaultScript : MonoBehaviour {
 		myX = levelControllerScript.GetMapCols ();
 		myY = levelControllerScript.GetMapRows ();
 	
-		ChangeLevel ();
+		ChangeLevel (0,0);
 	}
-
-	public void ChangeLevel(){
-		if (!System.IO.File.Exists (Application.dataPath + "/tiles_0_0.json")) { //generate level if it does not exist
+	public void ChangeLevel(int x, int y){
+		if (!System.IO.File.Exists (Application.dataPath + "/tiles_" + x + "_" + y + ".json")) { //generate level if it does not exist
 			Dungeon (myX, myY);
 			generate (_maxFeatures);
 			OutlineMap ();
@@ -431,9 +431,9 @@ public class LevelGeneratorDefaultScript : MonoBehaviour {
 			TilesForJson tfj = new TilesForJson ();
 			tfj.tilesForJson = _tiles;
 			string levelToJson = JsonUtility.ToJson(tfj);
-			System.IO.File.WriteAllText (Application.dataPath + "/tiles_0_0.json",levelToJson);
+			System.IO.File.WriteAllText (Application.dataPath + "/tiles_" + x + "_" + y + ".json",levelToJson);
 		} else { //load level otherwise
-			string fileString = System.IO.File.ReadAllText(Application.dataPath + "/tiles_0_0.json");
+			string fileString = System.IO.File.ReadAllText(Application.dataPath + "/tiles_" + x + "_" + y + ".json");
 			Dungeon (myX, myY);
 			TilesForJson loadedTiles = new TilesForJson ();
 			loadedTiles.tilesForJson = new List<Tile> ();
