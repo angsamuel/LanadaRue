@@ -2,16 +2,16 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/LevelGeneratorDefaultScript.cs">
     <Files>
-      <File FileName="Assets/Scripts/ItemScript.cs" Line="22" Column="15" />
-      <File FileName="Assets/Scripts/DragMap.cs" Line="10" Column="30" />
+      <File FileName="Assets/Scripts/ItemScript.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/DragMap.cs" Line="1" Column="1" />
       <File FileName="Assets/Scripts/LevelControllerScript.cs" Line="66" Column="14" />
-      <File FileName="Assets/Scripts/LivingThings/LivingThingScript.cs" Line="17" Column="40" />
-      <File FileName="Assets/Scripts/Environment/TileScript.cs" Line="16" Column="2" />
+      <File FileName="Assets/Scripts/LivingThings/LivingThingScript.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/Environment/TileScript.cs" Line="1" Column="1" />
       <File FileName="Assets/Scripts/Environment/WallScript.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/Player/PlayerCharacterScript.cs" Line="74" Column="52" />
-      <File FileName="Assets/Scripts/LevelGeneratorDefaultScript.cs" Line="58" Column="9" />
-      <File FileName="Assets/Scripts/DungeonGeneratorScript.cs" Line="27" Column="6" />
-      <File FileName="Assets/Scripts/SlumsLevelGeneratorScript.cs" Line="24" Column="29" />
+      <File FileName="Assets/Scripts/Player/PlayerCharacterScript.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/LevelGeneratorDefaultScript.cs" Line="428" Column="37" />
+      <File FileName="Assets/Scripts/DungeonGeneratorScript.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/SlumsLevelGeneratorScript.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

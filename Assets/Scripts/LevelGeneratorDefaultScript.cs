@@ -109,6 +109,7 @@ public class LevelGeneratorDefaultScript : MonoBehaviour {
 			Debug.Log("unable to place down stairs.");
 		}
 
+
 		for (int i = 0; i < _tiles.Count; ++i) {
 			if (_tiles [i] == Tile.Unused) {
 				//maybe something idk
@@ -391,6 +392,18 @@ public class LevelGeneratorDefaultScript : MonoBehaviour {
 		return true;
 	}
 
+	void placeNPCs(){
+		Debug.Log ("called");
+		int r = randomInt (_rooms.Count);
+		int x = randomInt (_rooms [r].x + 1, _rooms [r].x + _rooms [r].width - 2);
+		int y = randomInt (_rooms [r].y + 1, _rooms [r].y + _rooms [r].height - 2);
+
+		if (getTile (x, y) == Tile.Floor) {
+			Debug.Log ("npc placing...");
+			levelControllerScript.SpawnLivingThing (vagrant, x, y);
+		}
+	}
+
 	bool placeObject(Tile tile){
 		if (_rooms.Count < 1) {
 			return false;
@@ -432,6 +445,8 @@ public class LevelGeneratorDefaultScript : MonoBehaviour {
 
 		levelControllerScript.SpawnLivingThing (vagrant, _width/2 + 2, _height/2 + 2);
 		levelControllerScript.FillNPCList ();
+
+
 
 	}
 	public void ChangeLevel(int x, int y){
