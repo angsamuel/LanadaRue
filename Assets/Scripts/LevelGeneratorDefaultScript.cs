@@ -31,7 +31,6 @@ public class LevelGeneratorDefaultScript : MonoBehaviour {
 	LevelControllerScript levelControllerScript;
 
 
-
 	public class TilesForJson{
 		public List<Tile> tilesForJson;
 	}
@@ -222,7 +221,7 @@ public class LevelGeneratorDefaultScript : MonoBehaviour {
 		}
 		return false;
 	}
-
+		
 	bool makeRoom(int x, int y, Direction dir, bool firstRoom = false){
 		const int minRoomSize = 3;
 		const int maxRoomSize = 6;

@@ -4,6 +4,9 @@ using System.Collections;
 public class ItemScript : MonoBehaviour {
 	private string name;
 
+	public int dumpX;
+	public int dumpY;
+
 	private int posX;
 	private int posY;
 
