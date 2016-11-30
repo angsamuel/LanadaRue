@@ -4,6 +4,11 @@ using System.Collections.Generic;
 using LitJson;
 
 public class LevelGeneratorDefaultScript : MonoBehaviour {
+	//npcs
+	private GameObject vagrant;
+
+
+
 	public GameObject unused;
 	public GameObject floor;
 	public GameObject wall;
@@ -413,6 +418,10 @@ public class LevelGeneratorDefaultScript : MonoBehaviour {
 		door = Resources.Load("Prefabs/Environment/Door") as GameObject;
 		unused = Resources.Load("Prefabs/Environment/Unused") as GameObject;
 
+		//grab enemies from prefabs
+		vagrant = Resources.Load("Prefabs/NPCs/Vagrant") as GameObject;
+
+
 		//find levelController
 		levelControllerScript = GameObject.Find ("LevelController").GetComponent<LevelControllerScript> ();
 
@@ -420,6 +429,10 @@ public class LevelGeneratorDefaultScript : MonoBehaviour {
 		myY = levelControllerScript.GetMapRows ();
 	
 		ChangeLevel (0,0);
+
+		levelControllerScript.SpawnLivingThing (vagrant, _width/2 + 2, _height/2 + 2);
+		levelControllerScript.FillNPCList ();
+
 	}
 	public void ChangeLevel(int x, int y){
 		if (!System.IO.File.Exists (Application.dataPath + "/tiles_" + x + "_" + y + ".json")) { //generate level if it does not exist

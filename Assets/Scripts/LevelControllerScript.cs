@@ -26,11 +26,17 @@ public class LevelControllerScript : MonoBehaviour {
 	public int mapRows;
 	public int mapCols;
 
+	List<GameObject> npcList = new List<GameObject>();
+
 	//grid stores a list at each location, which stores all matrixOccupants
 	private GameObject [,] levelGrid; 
 
 	public LevelGeneratorDefaultScript GetLGScript(){
 		return lgScript;
+	}
+
+	public List<GameObject> GetNpcList(){
+		return npcList;
 	}
 
 	public int GetMapRows(){
@@ -53,13 +59,24 @@ public class LevelControllerScript : MonoBehaviour {
 		if (mapRows % 2 == 0) {oddRowAdjustment = -.5f;}
 		SpawnTiles();
 
-		SpawnPlayerCharacter (mapCols-1,mapRows-1);
+		SpawnPlayerCharacter (mapCols/2,mapRows/2);
 
 		GameObject slumsGeneratorPref = Resources.Load ("Prefabs/LevelGenerators/SlumsLevelGenerator") as GameObject;
         dumbGen = Resources.Load("Prefabs/LevelGenerators/DungeonGenerator") as GameObject;
 		levelGenerator = Resources.Load("Prefabs/LevelGenerators/LevelGeneratorDefault") as GameObject;
 		GameObject lg = Instantiate (levelGenerator, new Vector3 (0, 0, 0), Quaternion.identity) as GameObject;
-		 lgScript = lg.GetComponent<LevelGeneratorDefaultScript>();
+		lgScript = lg.GetComponent<LevelGeneratorDefaultScript>();
+
+
+
+
+
+	}
+
+	public void FillNPCList(){
+		//ensure all living things are spawned FIRST
+		npcList.AddRange(GameObject.FindGameObjectsWithTag ("NPC"));
+		Debug.Log ("npcs found: " + npcList.Count);
 	}
 
 	private void SpawnTiles(){
@@ -69,12 +86,16 @@ public class LevelControllerScript : MonoBehaviour {
 	public Vector3 CoordToVector3(int x ,int y, int z){
 		return new Vector3 (x - mapCols / 2 - oddColAdjustment, y - mapRows / 2 - oddRowAdjustment, z);
 	}
-		
+
+	public void SpawnLivingThing(GameObject lt, int x, int y){
+		GameObject spawnLt = Instantiate (lt, CoordToVector3(x,y,-1), Quaternion.identity) as GameObject;
+		spawnLt.GetComponent<LivingThingScript>().SetPosVariables(x,y);
+	}
+
     //fix this
 	private void SpawnPlayerCharacter(int x, int y){
 		GameObject spawnPlayerCharacter = Instantiate (playerCharacter, CoordToVector3(x,y,-1), Quaternion.identity) as GameObject;
-        spawnPlayerCharacter.GetComponent<PlayerCharacterScript>().SetPosVariables(x, y);
-        
+		spawnPlayerCharacter.GetComponent<PlayerCharacterScript> ().SetPosVariables (x, y);
 	}
 	//replaces tile in level grid
 	public void ReplaceTile(int x, int y, GameObject newTile){

@@ -15,19 +15,24 @@ public class PlayerCharacterScript : HumanScript {
 	public static int levelX = 0;
 	public static int levelY = 0;
 
-	private string cameraMode;
+	public enum CameraMode {locked, free};
 
+
+	private CameraMode cameraMode = CameraMode.locked;
 	GameObject camera;
 
     private LevelControllerScript levelControllerScript;
 
+
 	// Use this for initialization
 	void Start () {
-		cameraMode = "locked_camera";
         base.Start();
 		levelControllerScript = GameObject.Find ("LevelController").GetComponent<LevelControllerScript> ();
 		camera = GameObject.Find ("Main Camera");
 		camera.transform.position = new Vector3(transform.position.x, transform.position.y, camera.transform.position.z);
+
+		//stats
+		speed = 20;
 	}
 	
 	// Update is called once per frame
@@ -58,6 +63,7 @@ public class PlayerCharacterScript : HumanScript {
     }
 
 	void PlayerMove(int x, int y){
+
 		//generate new level
 		if (posX + x < 0 || posY + y < 0 || posX + x >= mapCols || posY + y >= mapRows) {
 			if (posY + y < 0) {
@@ -78,9 +84,19 @@ public class PlayerCharacterScript : HumanScript {
 			Debug.Log ("Moving to level " + levelX + ", "+ levelY);
 		} else {
 			Move (x, y);
+
+
+			int elapsedTime = 100 * (100 / 20);
+			foreach(GameObject npc in levelControllerScript.GetNpcList()){
+				npc.GetComponent<LivingThingScript> ().GiveAp (elapsedTime, 100);
+				npc.GetComponent<LivingThingScript> ().AIMove ();
+			}
+
+
 		}
-		if (cameraMode == "locked_camera") {
+		if (cameraMode == CameraMode.locked) {
 			camera.transform.position = new Vector3 (transform.position.x, transform.position.y, camera.transform.position.z);
 		}
 	}
+
 }
