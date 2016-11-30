@@ -30,7 +30,6 @@ public class LevelGeneratorDefaultScript : MonoBehaviour {
 
 	LevelControllerScript levelControllerScript;
 
-
 	public class TilesForJson{
 		public List<Tile> tilesForJson;
 	}
@@ -161,6 +160,9 @@ public class LevelGeneratorDefaultScript : MonoBehaviour {
 		return _tiles [x + y * _width];
 	}
 		
+	public void LateUpdate(){
+
+	}
 
 	public void setTile(int x, int y, Tile tile){
 		_tiles [x + y * _width] = tile;

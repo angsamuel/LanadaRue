@@ -15,15 +15,19 @@ public class PlayerCharacterScript : HumanScript {
 	public static int levelX = 0;
 	public static int levelY = 0;
 
+	private string cameraMode;
+
 	GameObject camera;
 
     private LevelControllerScript levelControllerScript;
 
 	// Use this for initialization
 	void Start () {
+		cameraMode = "locked_camera";
         base.Start();
 		levelControllerScript = GameObject.Find ("LevelController").GetComponent<LevelControllerScript> ();
 		camera = GameObject.Find ("Main Camera");
+		camera.transform.position = new Vector3(transform.position.x, transform.position.y, camera.transform.position.z);
 	}
 	
 	// Update is called once per frame
@@ -54,7 +58,6 @@ public class PlayerCharacterScript : HumanScript {
     }
 
 	void PlayerMove(int x, int y){
-
 		//generate new level
 		if (posX + x < 0 || posY + y < 0 || posX + x >= mapCols || posY + y >= mapRows) {
 			if (posY + y < 0) {
@@ -70,11 +73,14 @@ public class PlayerCharacterScript : HumanScript {
 				levelX += 1;
 				Teleport (0, posY);
 			}
-			camera.transform.position = new Vector3(CoordToVector3 (posX, posY, -1).x, CoordToVector3 (posX, posY, -1).y, camera.transform.position.z);
+			camera.transform.position = new Vector3(transform.position.x, transform.position.y, camera.transform.position.z);			
 			levelControllerScript.GetLGScript ().ChangeLevel (levelX, levelY);
 			Debug.Log ("Moving to level " + levelX + ", "+ levelY);
 		} else {
 			Move (x, y);
+		}
+		if (cameraMode == "locked_camera") {
+			camera.transform.position = new Vector3 (transform.position.x, transform.position.y, camera.transform.position.z);
 		}
 	}
 }
