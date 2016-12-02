@@ -443,7 +443,15 @@ public class LevelGeneratorDefaultScript : MonoBehaviour {
 	
 		ChangeLevel (0,0);
 
-		levelControllerScript.SpawnLivingThing (vagrant, _width/2 + 2, _height/2 + 2);
+
+		for (int i = 0; i < 10; ++i) {
+			int x = Random.Range (0, _width);
+			int y = Random.Range (0, _height);
+			Debug.Log (x + ", " + y);
+			if (levelControllerScript.GetLevelGrid ()[x, y].GetComponent<TileScript> ().IsGround ()) {
+				levelControllerScript.SpawnLivingThing (vagrant, x,y);
+			}
+		}
 		levelControllerScript.FillNPCList ();
 
 

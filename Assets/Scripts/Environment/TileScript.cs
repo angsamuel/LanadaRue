@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class TileScript : MonoBehaviour {
-	protected bool passable;
+	public bool passable;
 	protected Sprite mySprite;
 
 	public float minRandScale =  0.0f;
@@ -12,6 +12,7 @@ public class TileScript : MonoBehaviour {
 	public string id;
 
     protected bool occupied = false;
+	protected bool ground = true;
     protected GameObject occupant;
 
 	protected void Start(){
@@ -25,9 +26,16 @@ public class TileScript : MonoBehaviour {
 	public bool IsPassable(){
 		if (occupied) {
 			//more complicated than this
-			return false;
+			//return false;
 		}
-		return passable;
+		if (passable) {
+			Debug.Log ("passable");
+		}
+		//return passable;
+		return ground;
+	}
+	public bool IsGround(){
+		return ground;
 	}
 	public void SetPassable(bool newPassable){
 		passable = newPassable;
@@ -46,5 +54,8 @@ public class TileScript : MonoBehaviour {
         occupant = null;
         occupied = false;
     }
+	public bool IsOccupied(){
+		return occupied;
+	}
 
 }

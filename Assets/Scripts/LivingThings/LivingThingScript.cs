@@ -39,7 +39,8 @@ public class LivingThingScript : MonoBehaviour {
     protected void Move(int x, int y)
     {
 		levelGrid = levelControllerScript.GetLevelGrid();
-		if (posX + x >= 0 && posX + x <= mapCols && posY + y >= 0 && posY + y <= mapRows && levelGrid [posX + x, posY + y] != null) {
+		// && levelGrid [posX + x, posY + y] != null
+		if (posX + x >= 0 && posX + x < mapCols && posY + y >= 0 && posY + y < mapRows) {
 		Debug.Log( (posX)  + ", " + (posY));
 			if (levelGrid [posX + x, posY + y].GetComponent<TileScript> ().IsPassable ()) {
 				levelGrid [posX, posY].GetComponent<TileScript> ().RemoveOccupant ();

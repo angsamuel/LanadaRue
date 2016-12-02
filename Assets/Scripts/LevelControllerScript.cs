@@ -66,11 +66,6 @@ public class LevelControllerScript : MonoBehaviour {
 		levelGenerator = Resources.Load("Prefabs/LevelGenerators/LevelGeneratorDefault") as GameObject;
 		GameObject lg = Instantiate (levelGenerator, new Vector3 (0, 0, 0), Quaternion.identity) as GameObject;
 		lgScript = lg.GetComponent<LevelGeneratorDefaultScript>();
-
-
-
-
-
 	}
 
 	public void FillNPCList(){
@@ -118,6 +113,12 @@ public class LevelControllerScript : MonoBehaviour {
         return levelGrid;
         Debug.Log("got level grid");
     }
+
+	public bool TileIsOpen(int x, int y){
+		return levelGrid [x, y].GetComponent<TileScript> ().IsPassable ();// && !levelGrid [x, y].GetComponent<TileScript> ().IsOccupied ();
+		return true;
+	}
+
 	public void SetLevelGrid(GameObject[,] lg){
 		levelGrid = lg;
 	}

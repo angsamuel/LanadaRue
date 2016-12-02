@@ -4,13 +4,13 @@
     <Files>
       <File FileName="Assets/Scripts/ItemScript.cs" Line="1" Column="1" />
       <File FileName="Assets/Scripts/DragMap.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/LevelControllerScript.cs" Line="66" Column="14" />
-      <File FileName="Assets/Scripts/LivingThings/LivingThingScript.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/Environment/TileScript.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/Environment/WallScript.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/LivingThings/LivingThingScript.cs" Line="45" Column="51" />
+      <File FileName="Assets/Scripts/Environment/TileScript.cs" Line="38" Column="17" />
+      <File FileName="Assets/Scripts/Environment/WallScript.cs" Line="10" Column="18" />
       <File FileName="Assets/Scripts/Player/PlayerCharacterScript.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/LevelGeneratorDefaultScript.cs" Line="428" Column="37" />
-      <File FileName="Assets/Scripts/DungeonGeneratorScript.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/LevelControllerScript.cs" Line="67" Column="3" />
+      <File FileName="Assets/Scripts/LevelGeneratorDefaultScript.cs" Line="445" Column="3" />
+      <File FileName="Assets/Scripts/DungeonGeneratorScript.cs" Line="265" Column="1" />
       <File FileName="Assets/Scripts/SlumsLevelGeneratorScript.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>

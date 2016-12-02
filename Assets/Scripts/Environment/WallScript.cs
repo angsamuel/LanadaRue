@@ -7,6 +7,7 @@ public class WallScript : TileScript {
 	new void Start () {
         base.Start();
         passable = false;
+		ground = false;
 	}
 	
 	// Update is called once per frame
